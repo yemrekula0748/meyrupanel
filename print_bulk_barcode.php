@@ -5,8 +5,8 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Gerekli kütüphaneler
-require_once '/home/hpanel-semre/htdocs/semre.hpanel.com.tr/vendor/autoload.php';
-require_once '/home/hpanel-semre/htdocs/semre.hpanel.com.tr/vendor/tecnickcom/tcpdf/tcpdf.php';
+require_once '/home/meyrupanel/htdocs/meyrupanel.com.tr/meyrupanel/vendor/autoload.php';
+require_once '/home/meyrupanel/htdocs/meyrupanel.com.tr/meyrupanel/vendor/tecnickcom/tcpdf/tcpdf.php';
 require_once 'DB.php';
 
 session_start();
@@ -57,7 +57,7 @@ if (!$orders) {
 }
 
 // Font yolunu belirt
-$fontPath = '/home/hpanel-semre/htdocs/semre.hpanel.com.tr/Ubuntu-Regular.ttf'; // Font dosyasının doğru yolu
+$fontPath = '/home/meyrupanel/htdocs/meyrupanel.com.tr/meyrupanel/Ubuntu-Regular.ttf'; // Font dosyasının doğru yolu
 $fontName = TCPDF_FONTS::addTTFfont($fontPath, 'TrueTypeUnicode', '', 96);
 
 // TCPDF nesnesini oluştur

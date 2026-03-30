@@ -5,8 +5,8 @@ error_reporting(E_ALL);
 
 
 require_once 'DB.php';
-require_once '/home/hpanel-semre/htdocs/semre.hpanel.com.tr/vendor/autoload.php';
-require_once '/home/hpanel-semre/htdocs/semre.hpanel.com.tr/vendor/tecnickcom/tcpdf/tcpdf.php';
+require_once '/home/meyrupanel/htdocs/meyrupanel.com.tr/meyrupanel/vendor/autoload.php';
+require_once '/home/meyrupanel/htdocs/meyrupanel.com.tr/meyrupanel/vendor/tecnickcom/tcpdf/tcpdf.php';
 if (class_exists('TCPDF')) {
     echo 'TCPDF yüklü!<br>';
     echo 'TCPDF Versiyonu: ' . TCPDF::VERSION . '<br>';

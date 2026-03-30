@@ -247,8 +247,8 @@ use Picqer\Barcode\BarcodeGeneratorPNG;
 
 
 // Barkod çıktısı için :) tasarım bok gibi ama iş görür
-require_once '/home/hpanel-semre/htdocs/semre.hpanel.com.tr/vendor/autoload.php';
-require_once '/home/hpanel-semre/htdocs/semre.hpanel.com.tr/vendor/tecnickcom/tcpdf/tcpdf.php';
+require_once '/home/meyrupanel/htdocs/meyrupanel.com.tr/meyrupanel/vendor/autoload.php';
+require_once '/home/meyrupanel/htdocs/meyrupanel.com.tr/meyrupanel/vendor/tecnickcom/tcpdf/tcpdf.php';
 
 
 $db = new DB();
