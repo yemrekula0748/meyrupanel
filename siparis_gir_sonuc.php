@@ -32,9 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $secureUserName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
 		$secureUserName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
 
-// Eğer müşteri adresinde 'PTT' kelimesi varsa, secureUserName'i "Yunus Emre - PTT" olarak değiştir.
+// Eğer müşteri adresinde 'PTT' kelimesi varsa, secureUserName'i "MeyruKids" olarak değiştir.
 if (strpos($musteri_adresi, 'PTT') !== false && $secureUserName !== "Sevim Aydın - PTT") {
-    $secureUserName = "Yunus Emre - PTT";
+    $secureUserName = "MeyruKids";
 }
 
 
@@ -73,11 +73,11 @@ if ($kargo == 'Ödeme Şartlı') {
         runAsyncCurl("https://semre.hpanel.com.tr/yunusemrehepsijet.php");
     } elseif ($secureUserName == 'Sevim Aydın - PTT') {
         runAsyncCurl("https://semre.hpanel.com.tr/sevimaydinpttsartliodeme.php");
-    } elseif ($secureUserName == 'Yunus Emre - PTT') {
+    } elseif ($secureUserName == 'MeyruKids') {
         runAsyncCurl("https://semre.hpanel.com.tr/yunusemrepttsartliodeme.php");
     }
 } elseif ($kargo == 'Bedelsiz') {
-    if ($secureUserName == 'Yunus Emre - PTT') {
+    if ($secureUserName == 'MeyruKids') {
         runAsyncCurl("https://semre.hpanel.com.tr/yunusemrepttsartliodeme.php");
     } elseif ($secureUserName == 'Yunus Emre - Hepsijet') {
         runAsyncCurl("https://semre.hpanel.com.tr/yunusemrehepsijetbedelsiz.php");
@@ -87,7 +87,7 @@ if ($kargo == 'Ödeme Şartlı') {
 } elseif ($kargo == 'Ücreti Alıcıdan') {
     if ($secureUserName == 'Yunus Emre - Hepsijet') {
         runAsyncCurl("https://semre.hpanel.com.tr/yunusemrehepsijetbedelsiz.php");
-    } elseif ($secureUserName == 'Yunus Emre - PTT') {
+    } elseif ($secureUserName == 'MeyruKids') {
         runAsyncCurl("https://semre.hpanel.com.tr/yunusemrepttucretialicidan.php");
     } elseif ($secureUserName == 'Sevim Aydın - PTT') {
         runAsyncCurl("https://semre.hpanel.com.tr/sevimaydinpttucretialicidan.php");
@@ -132,7 +132,7 @@ if ($kargo == 'Ödeme Şartlı') {
 	
 	if ($secureUserName == 'Sevim Aydın - PTT') {
     $url = 'https://semre.hpanel.com.tr/sevimaydin_musteriden_faturaya.php';
-} elseif ($secureUserName == 'Yunus Emre - PTT') {
+} elseif ($secureUserName == 'MeyruKids') {
     $url = 'https://semre.hpanel.com.tr/yunusemre_musteriden_faturaya.php';
 }
 

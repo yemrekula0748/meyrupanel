@@ -240,7 +240,7 @@ $counter = 1; // Sayaç başlangıç değeri ?>
                                          
 
 <td><?= $counter++ ?></td>
-<td><?= htmlspecialchars($row['id']) ?></td>
+<td><?= htmlspecialchars($row['id'] ?? '') ?></td>
                                                 <td>
                                                     <?= htmlspecialchars($odemeDurumu) ?>
                                                     <?php if($row['hangisayfa'] == 'iKas'): ?>
@@ -252,16 +252,16 @@ $counter = 1; // Sayaç başlangıç değeri ?>
                                                 </td>
                                                 <td>
     <?php if (!empty($row['kargo_barkodu']) && strpos($row['kargo_barkodu'], 'SMR') === 0): ?>
-        <a href="https://www.hepsijet.com/gonderi-takibi/<?= htmlspecialchars($row['kargo_barkodu']) ?>" target="_blank">
-            <?= htmlspecialchars($row['kargo_barkodu']) ?>
+        <a href="https://www.hepsijet.com/gonderi-takibi/<?= htmlspecialchars($row['kargo_barkodu'] ?? '') ?>" target="_blank">
+            <?= htmlspecialchars($row['kargo_barkodu'] ?? '') ?>
         </a>
     <?php else: ?>
         <?php if (!empty($row['kargolink'])): ?>
-            <a href="<?= htmlspecialchars($row['kargolink']) ?>" target="_blank">
-                <?= htmlspecialchars($row['kargo_barkodu']) ?>
+            <a href="<?= htmlspecialchars($row['kargolink'] ?? '') ?>" target="_blank">
+                <?= htmlspecialchars($row['kargo_barkodu'] ?? '') ?>
             </a>
         <?php else: ?>
-            <?= htmlspecialchars($row['kargo_barkodu']) ?>
+            <?= htmlspecialchars($row['kargo_barkodu'] ?? '') ?>
         <?php endif; ?>
     <?php endif; ?>
 </td>
@@ -276,7 +276,7 @@ $counter = 1; // Sayaç başlangıç değeri ?>
     <?php elseif ($row['kargo'] === 'Ücreti Alıcıdan'): ?>
         <span class="badge rounded-pill text-bg-warning">UA</span>
     <?php else: ?>
-        <span class="badge rounded-pill text-bg-info">SEM<?= htmlspecialchars($row['id']) ?></span>
+        <span class="badge rounded-pill text-bg-info">MEY<?= htmlspecialchars($row['id']) ?></span>
 
     <?php endif; ?>
 </td>
