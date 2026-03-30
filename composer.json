@@ -1,0 +1,10 @@
+{
+    "require": {
+        "phpoffice/phpspreadsheet": "^3.6",
+        "ahmeti/ptt-kargo-api": "@dev",
+        "inpinos/php-parasut-api-v4": "^1.4",
+        "netinternet/parasut-v4": "^1.0",
+        "tecnickcom/tcpdf": "^6.8",
+        "picqer/php-barcode-generator": "^3.2"
+    }
+}

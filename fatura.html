@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etiket Tasarımı</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .label-container {
+            width: 400px;
+            height: auto;
+            padding: 20px;
+            border: 1px solid #000;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 10px;
+        }
+        .section span {
+            display: block;
+        }
+        .sender, .receiver {
+            font-weight: bold;
+        }
+        .barcode {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .barcode img {
+            display: block;
+            margin: 0 auto;
+            height: 50px;
+        }
+        .barcode span {
+            font-size: 14px;
+            display: block;
+            margin-top: 5px;
+        }
+        .bottom-text {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="label-container">
+        <div class="section">
+            <span class="sender">GÖNDERİCİ:</span>
+            <span>Yunus Emre AYDIN</span>
+            <span>Baraj Mah. Kırçiçeği cad. 1A+2A blok 104 A</span>
+            <span>Kepez / ANTALYA</span>
+            <span>ÖDEME ŞARTLI</span>
+            <span>405,00 TL</span>
+        </div>
+        <div class="section">
+            <span class="receiver">ALICI: Aryaabutık</span>
+            <span>Aytüzün Aybek</span>
+            <span>TELEFON: 0542 184 17 44</span>
+            <span>44 siyah yelekli takım</span>
+        </div>
+        <div class="section">
+            <span>ADRES: İsmetpaşa mah 37 sokak no14 daire133 kat7 Troya apartmanı Çanakkale merkez</span>
+        </div>
+        <div class="barcode">
+            <img src="/barcode.php?text=KP988998989" alt="testing" />
+            <span>SMR4010784453801</span>
+        </div>
+        <div class="bottom-text">HEPSİJET</div>
+    </div>
+</body>
+</html>
