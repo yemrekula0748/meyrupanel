@@ -215,11 +215,11 @@ $counter = 1; // Sayaç başlangıç değeri ?>
                                             };
 
                                             $odemeDurumu = match ($row['hangikargo']) {
-                                                'Yunus Emre - PTT' => 'YunusEmre Aydın',
+                                                'MeyruKids' => 'Meyru Kids',
                                                 'Sevim Aydın - PTT' => 'Sevim Aydın',
-												'Yunus Emre - Hepsijet' => 'HepsiJET',
+                                                'Yunus Emre - Hepsijet' => 'HepsiJET',
                                                 '' => 'İkas',
-                                                default => $row['null']
+                                                default => ''
                                             };
 
                                             // Resmileşme durumu
