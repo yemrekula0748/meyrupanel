@@ -4,7 +4,7 @@ class DB {
     private $conn;
 
     public function __construct() {
-        $this->conn = new mysqli('localhost', '	meyrupanel', '	meyrupanel', '	meyrupanel');
+        $this->conn = new mysqli('localhost', 'meyrupanel', 'meyrupanel', 'meyrupanel');
 
         if ($this->conn->connect_error) {
             die('Bağlantı hatası: ' . $this->conn->connect_error);
