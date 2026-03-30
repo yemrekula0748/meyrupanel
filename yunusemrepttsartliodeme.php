@@ -65,8 +65,8 @@ try {
                         'gonderici_ilce_ad' => 'Kepez'
                     ],
                     'odeme_sart_ucreti' => $row['odeme_sart_ucreti'],
-                    'rezerve1' => '14086565',
-                    'rezerve2' => '14086565',
+                    'rezerve1' => '18038415',
+                    'rezerve2' => '18038415',
                     'aliciSms' => $row['aliciSms'],
                     'ekhizmet' => 'OS'
                 ],

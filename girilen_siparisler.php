@@ -179,10 +179,9 @@ $counter = 1; // Sayaç başlangıç değeri ?>
                             <table class="table table-striped table-bordered text-center align-middle">
                                 <thead>
                                         <tr>
-                                              <th>Sipariş</th>
-                                            <th>ID</th>
-                                            <th>PTT</th>
-                                            <th>BARKOD NO</th>
+                                                                                            <th>Sipariş</th>
+                                                                                        <th>ID</th>
+                                                                                        <th>BARKOD NO</th>
                                             <th>FATURA NO</th>
                                             <th>ÜRÜNLER</th>
                                             <th>MÜŞTERİ</th>
@@ -241,15 +240,6 @@ $counter = 1; // Sayaç başlangıç değeri ?>
 
 <td><?= $counter++ ?></td>
 <td><?= htmlspecialchars($row['id'] ?? '') ?></td>
-                                                <td>
-                                                    <?= htmlspecialchars($odemeDurumu) ?>
-                                                    <?php if($row['hangisayfa'] == 'iKas'): ?>
-                                                        <br>
-                                                        <span class="badge rounded-pill bg-danger">
-                                                            <?= htmlspecialchars($row['hangisayfa']) ?>
-                                                        </span>
-                                                    <?php endif; ?>
-                                                </td>
                                                 <td>
     <?php
         $barkodNo = $row['kargo_barkodu'] ?? '';
