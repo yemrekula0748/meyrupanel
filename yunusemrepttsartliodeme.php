@@ -27,7 +27,7 @@ try {
         FROM siparisler s
         INNER JOIN ptt_kargo_barkodlari b ON b.durum = 0
         WHERE s.kargo_cron = 0 
-          AND s.hangikargo = 'Yunus Emre - PTT' 
+          AND s.hangikargo = 'MeyruKids' 
           AND s.kargo = 'Ödeme Şartlı'
         LIMIT 1
     ";
@@ -59,8 +59,8 @@ try {
                     'yukseklik' => 1,
                     'desi' => 1,
                     'gondericiBilgi' => [
-                        'gonderici_adi' => 'S. AYDIN TEKSTİL GİYİM',
-                        'gonderici_adresi' => 'Baraj mahallesi kırçiçeği caddesi 1A+2A blok no 104/A',
+                        'gonderici_adi' => 'Merve İNCİR - MEYRUKİDS',
+                        'gonderici_adresi' => 'Varsak Süleyman Demirel Bulvarı , Karşıyaka mahallesi no:137/A kepez/Antalya',
                         'gonderici_il_ad' => 'Antalya',
                         'gonderici_ilce_ad' => 'Kepez'
                     ],
@@ -74,8 +74,8 @@ try {
                 'gonderiTip' => 'NORMAL',
                 'gonderiTur' => 'KARGO',
                 'kullanici' => 'PttWs',
-                'sifre' => 'sGG62WGcR7X3kjRJTJbHQ',
-                'musteriId' => '402955632'
+                'sifre' => 'JQkoqaMXDzK0I1YIHR4jA',
+                'musteriId' => '704992342'
             ]
         ];
 

@@ -251,19 +251,19 @@ $counter = 1; // Sayaç başlangıç değeri ?>
                                                     <?php endif; ?>
                                                 </td>
                                                 <td>
-    <?php if (!empty($row['kargo_barkodu']) && strpos($row['kargo_barkodu'], 'SMR') === 0): ?>
-        <a href="https://www.hepsijet.com/gonderi-takibi/<?= htmlspecialchars($row['kargo_barkodu'] ?? '') ?>" target="_blank">
-            <?= htmlspecialchars($row['kargo_barkodu'] ?? '') ?>
-        </a>
-    <?php else: ?>
-        <?php if (!empty($row['kargolink'])): ?>
-            <a href="<?= htmlspecialchars($row['kargolink'] ?? '') ?>" target="_blank">
-                <?= htmlspecialchars($row['kargo_barkodu'] ?? '') ?>
-            </a>
-        <?php else: ?>
-            <?= htmlspecialchars($row['kargo_barkodu'] ?? '') ?>
-        <?php endif; ?>
-    <?php endif; ?>
+    <?php
+        $barkodNo = $row['kargo_barkodu'] ?? '';
+        $kargoLink = $row['kargolink'] ?? '';
+        if ($barkodNo === null || $barkodNo === '') {
+            echo 'Oluşturuluyor';
+        } elseif (strpos($barkodNo, 'SMR') === 0) {
+            echo '<a href="https://www.hepsijet.com/gonderi-takibi/' . htmlspecialchars($barkodNo) . '" target="_blank">' . htmlspecialchars($barkodNo) . '</a>';
+        } elseif (!empty($kargoLink)) {
+            echo '<a href="' . htmlspecialchars($kargoLink) . '" target="_blank">' . htmlspecialchars($barkodNo) . '</a>';
+        } else {
+            echo htmlspecialchars($barkodNo);
+        }
+    ?>
 </td>
 
 
