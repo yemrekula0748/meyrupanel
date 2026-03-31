@@ -188,8 +188,47 @@ while ($islemSayisi < $maxKayit) {
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     if ($httpCode == 201 || $httpCode == 202) {
-        $db->query("UPDATE siparisler SET parasut_resmilesme_durumu = 1 WHERE id = '" . $siparis['id'] . "'");
-        echo "BAŞARILI: Fatura resmileştirildi (ID: {$siparis['id']})<br>";
+        // Yanıttan job id'yi al
+        $json = json_decode($response, true);
+        $jobId = $json['data']['id'] ?? null;
+        $jobStatus = null;
+        $jobResult = null;
+        if ($jobId) {
+            // Trackable job'ı sorgula (max 5 deneme, 2 sn arayla)
+            for ($try = 0; $try < 5; $try++) {
+                $chJob = curl_init("https://api.parasut.com/v4/624505/trackable_jobs/" . $jobId);
+                curl_setopt_array($chJob, [
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_HTTPHEADER => [
+                        'Authorization: Bearer ' . $access_token,
+                        'Content-Type: application/json',
+                        'Accept: application/json'
+                    ],
+                    CURLOPT_SSL_VERIFYPEER => false
+                ]);
+                $jobResp = curl_exec($chJob);
+                curl_close($chJob);
+                $jobJson = json_decode($jobResp, true);
+                $jobStatus = $jobJson['data']['attributes']['status'] ?? null;
+                $jobResult = $jobJson['data']['attributes']['result'] ?? null;
+                echo '<pre>Trackable Job Yanıtı ['.($try+1).']: ' . htmlspecialchars($jobResp) . '</pre>';
+                if ($jobStatus === 'success' || $jobStatus === 'failed') {
+                    break;
+                }
+                bekle(2);
+            }
+            if ($jobStatus === 'success') {
+                $db->query("UPDATE siparisler SET parasut_resmilesme_durumu = 1 WHERE id = '" . $siparis['id'] . "'");
+                echo "BAŞARILI: Fatura gerçekten resmileşti (ID: {$siparis['id']})<br>";
+            } elseif ($jobStatus === 'failed') {
+                echo "HATA: Parasut job başarısız oldu (ID: {$siparis['id']})<br>";
+                $db->query("UPDATE siparisler SET resmilestir = -1 WHERE id = '" . $siparis['id'] . "'");
+            } else {
+                echo "UYARI: Parasut job halen tamamlanmadı (ID: {$siparis['id']})<br>";
+            }
+        } else {
+            echo "UYARI: Job ID alınamadı, sadece ilk yanıt gösteriliyor.<br>";
+        }
         echo '<pre>API JSON Yanıtı: ' . htmlspecialchars($response) . '</pre>';
     } else {
         echo "HATA: Fatura resmileştirilemedi (ID: {$siparis['id']}) - HTTP: $httpCode<br>";
