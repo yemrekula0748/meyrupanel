@@ -154,7 +154,7 @@ if (stripos($hangikargo, 'PTT') !== false) {
 // Değeri HTML'de yerleştir
 $html = str_replace('{{hangikargo}}', htmlspecialchars($hangikargoMetni), $html);
 
-$siparisNo = 'SEM' . htmlspecialchars($row['id']);
+$siparisNo = 'MEY' . htmlspecialchars($row['id']);
 $html = str_replace('{{siparisno}}', $siparisNo, $html);
 		
 		

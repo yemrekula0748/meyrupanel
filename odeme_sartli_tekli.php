@@ -147,7 +147,7 @@ if ($total_records > 0) {
 	    $html = str_replace('{{kdv_tutari}}', $kdv_tutari, $html);
         $html = str_replace('{{odeme_sarti_yazi}}', $odeme_sarti_yazi, $html);
         $html = str_replace('{{kargo_sorumlu}}', $kargo_sorumlu, $html);
-$siparisNo = 'SEM' . htmlspecialchars($row['id']);
+$siparisNo = 'MEY' . htmlspecialchars($row['id']);
 $html = str_replace('{{siparisno}}', $siparisNo, $html);
 
         // Dinamik HTML Çıktısını Görüntüle
