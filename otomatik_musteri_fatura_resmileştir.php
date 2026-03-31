@@ -56,6 +56,7 @@ while (true) {
         $response = curl_exec($ch);
         if (curl_errno($ch)) {
             echo 'Müşteri Oluşturma Hatası: ' . curl_error($ch) . "<br>";
+            $db->query("UPDATE siparisler SET resmilestir = -1 WHERE id = '" . $siparis['id'] . "'");
         } else {
             $response_data = json_decode($response, true);
             if (isset($response_data['data']['id'])) {
@@ -64,6 +65,7 @@ while (true) {
                 echo "Müşteri oluşturuldu: Sipariş ID {$siparis['id']}<br>";
             } else {
                 echo "Müşteri oluşturulamadı: Sipariş ID {$siparis['id']}<br>";
+                $db->query("UPDATE siparisler SET resmilestir = -1 WHERE id = '" . $siparis['id'] . "'");
             }
         }
         curl_close($ch);
@@ -140,6 +142,7 @@ while (true) {
         $response = curl_exec($ch);
         if (curl_errno($ch)) {
             echo 'Fatura Oluşturma Hatası: ' . curl_error($ch) . "<br>";
+            $db->query("UPDATE siparisler SET resmilestir = -1 WHERE id = '" . $siparis['id'] . "'");
         } else {
             $response_data = json_decode($response, true);
             if (isset($response_data['data']['attributes']['invoice_no']) && isset($response_data['data']['id'])) {
@@ -149,6 +152,7 @@ while (true) {
                 echo "Fatura oluşturuldu ve resmimi=1 yapıldı: Sipariş ID {$siparis['id']}<br>";
             } else {
                 echo "Fatura oluşturulamadı: Sipariş ID {$siparis['id']}<br>";
+                $db->query("UPDATE siparisler SET resmilestir = -1 WHERE id = '" . $siparis['id'] . "'");
             }
         }
         curl_close($ch);
@@ -199,6 +203,7 @@ while (true) {
             echo "Fatura resmileştirildi: Sipariş ID {$siparis['id']}<br>";
         } else {
             echo "Fatura resmileştirilemedi: Sipariş ID {$siparis['id']}<br>";
+            $db->query("UPDATE siparisler SET resmilestir = -1 WHERE id = '" . $siparis['id'] . "'");
         }
         $islemYapildi = true;
         bekle(2);
