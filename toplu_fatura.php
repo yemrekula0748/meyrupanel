@@ -298,8 +298,8 @@ ob_start();
                               <td style="width:469px; " align="left"><h1 class="style7">SEMREBUTİK - <?php
                                 $order['hangikargo'] = htmlspecialchars($order['hangikargo']);
 
-                                if ($order['hangikargo'] === "Yunus Emre - PTT") {
-                                    echo "Yunus Emre AYDIN";
+                                if ($order['hangikargo'] === "MeyruKids") {
+                                    echo "MeyruKids";
                                 } elseif ($order['hangikargo'] === "Sevim Aydın - PTT") {
                                     echo "Sevim AYDIN";
                                 } else {

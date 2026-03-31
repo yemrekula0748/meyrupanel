@@ -6,7 +6,7 @@ for ($i = 0; $i < 20; $i++) {
     
     // cURL ayarları
     curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://semre.hpanel.com.tr/yunusemre_fatura_olustur_cron.php',
+        CURLOPT_URL => 'https://meyrupanel.com.tr/yunusemre_fatura_olustur_cron.php',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_TIMEOUT => 10, // Maksimum bekleme süresi
     ));

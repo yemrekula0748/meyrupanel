@@ -1,5 +1,5 @@
 <?php
-$url = 'https://semre.hpanel.com.tr/sadi_yunusemre_ptt_bedelsiz_odeme.php'; // Veya uzaktaysa tam URL
+$url = 'https://meyrupanel.com.tr/sadi_yunusemre_ptt_bedelsiz_odeme.php'; // Veya uzaktaysa tam URL
 $tekrar_sayisi = 18;
 $bekleme_suresi = 3; // saniye
 

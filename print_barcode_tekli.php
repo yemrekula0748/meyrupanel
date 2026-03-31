@@ -50,7 +50,7 @@ if ($result && $result->num_rows > 0) {
     if (stripos(strtolower($row['hangikargo']), 'sevim') !== false) {
         $gondericiIsmi = "Sevim Aydın";
     } elseif (stripos(strtolower($row['hangikargo']), 'yunus') !== false) {
-        $gondericiIsmi = "Yunus Emre AYDIN";
+        $gondericiIsmi = "MeyruKids";
     }
 
     // Ücret tipini belirle

@@ -16,7 +16,7 @@ try {
       AND sales_invoice_id IS NOT NULL 
       AND iptalmi = 0 
       AND parasut_resmilesme_durumu = 0 
-      AND (hangikargo = 'Yunus Emre - PTT' OR hangikargo = 'Yunus Emre - Hepsijet')
+      AND (hangikargo = 'MeyruKids' OR hangikargo = 'Yunus Emre - Hepsijet')
 ";
 
                  
@@ -32,7 +32,7 @@ try {
         throw new Exception("Access token bulunamadı!");
     }
     
-    $company_id = "50038";
+    $company_id = "624505";
     $successCount = 0;
     
     while ($row = $db->fetchAssoc($result)) {

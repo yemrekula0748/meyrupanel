@@ -289,8 +289,8 @@ ob_start();
                             </tr>
                             <tr>
                               <td style="width:469px; " align="left"><h1 class="style7">SEMREBUTİK - <?php
-                                if ($sirketismi === "Yunus Emre - PTT") {
-                                    echo "Yunus Emre AYDIN";
+                                if ($sirketismi === "MeyruKids") {
+                                    echo "MeyruKids";
                                 } elseif ($sirketismi === "Sevim Aydın - PTT") {
                                     echo "Sevim AYDIN";
                                 } else {

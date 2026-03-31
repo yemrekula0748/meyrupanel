@@ -111,7 +111,7 @@ if ($result->num_rows > 0) {
         echo "Gönderi başarıyla oluşturuldu: $customerDeliveryNo";
     } else {
         // Hata durumunda PTT'ye yönlendir
-        $updateQuery = "UPDATE siparisler SET hangikargo = 'Yunus Emre - PTT' WHERE id = ?";
+        $updateQuery = "UPDATE siparisler SET hangikargo = 'MeyruKids' WHERE id = ?";
         $db->query($updateQuery, [$siparis['id']], 'i');
         
         error_log("Hepsijet Hata (ID: {$siparis['id']}): HTTP Kodu: $httpCode, Yanıt: $response");

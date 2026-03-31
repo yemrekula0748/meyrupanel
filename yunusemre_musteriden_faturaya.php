@@ -9,7 +9,7 @@ $tokenResult = $db->fetchAssoc($tokenQuery);
 $access_token = $tokenResult['parasut_token_yunusemre'];
 
 // Sipariş verilerini almak
-$siparisQuery = $db->query("SELECT * FROM siparisler WHERE hangikargo = 'Yunus Emre - PTT' AND parasut_id = 0");
+$siparisQuery = $db->query("SELECT * FROM siparisler WHERE hangikargo = 'MeyruKids' AND parasut_id = 0");
 $siparisler = [];
 while ($row = $db->fetchAssoc($siparisQuery)) {
     $siparisler[] = $row;
@@ -34,7 +34,7 @@ foreach ($siparisler as $siparis) {
     ];
 
     $options = [
-        CURLOPT_URL => 'https://api.parasut.com/v4/50038/contacts',
+        CURLOPT_URL => 'https://api.parasut.com/v4/624505/contacts',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => [
             'Content-Type: application/json',
@@ -59,7 +59,7 @@ foreach ($siparisler as $siparis) {
         $updateQuery = $db->query("UPDATE siparisler SET parasut_id = '" . $response_data['data']['id'] . "' WHERE id = '" . $siparis['id'] . "'");
         
         // yunusemre_fatura_olustur.php sayfasını çalıştırma
-        $fatura_url = 'https://semre.hpanel.com.tr/yunusemre_fatura_olustur_cron.php';
+        $fatura_url = 'https://meyrupanel.com.tr/yunusemre_fatura_olustur_cron.php';
         $fatura_ch = curl_init();
         curl_setopt($fatura_ch, CURLOPT_URL, $fatura_url);
         curl_setopt($fatura_ch, CURLOPT_RETURNTRANSFER, true);

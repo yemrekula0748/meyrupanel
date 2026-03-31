@@ -18,7 +18,7 @@ for ($i = 0; $i < 30; $i++) {
     // Sipariş verilerini almak
 $siparisQuery = $db->query("SELECT * 
 FROM siparisler 
-WHERE hangikargo = 'Yunus Emre - PTT' 
+WHERE hangikargo = 'MeyruKids' 
   AND parasut_id != 0 
   AND (parasut_fatura_numarasi IS NULL OR parasut_fatura_numarasi = '') 
   AND kargo = 'Ödeme Şartlı' 
@@ -90,7 +90,7 @@ LIMIT 2;");
 
         // CURL istek ayarları
         $options = [
-            CURLOPT_URL => 'https://api.parasut.com/v4/50038/sales_invoices',
+            CURLOPT_URL => 'https://api.parasut.com/v4/624505/sales_invoices',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json',

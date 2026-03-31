@@ -53,7 +53,7 @@ if ($result->num_rows > 0) {
         $pdf->RoundedRect(5, 5, 90, 140, 4, '1111', 'D');
 
         // Gönderici Bilgileri
-        $gondericiIsmi = (stripos(strtolower($row['hangikargo']), 'sevim') !== false) ? "Sevim Aydın" : "Yunus Emre AYDIN";
+        $gondericiIsmi = (stripos(strtolower($row['hangikargo']), 'sevim') !== false) ? "Sevim Aydın" : "MeyruKids";
         $ucretTipi = ($row['kargo'] == 'Ücreti Alıcıdan') ? 'ÜCRETİ ALICIDAN' : 'BEDELSİZ';
 
         $pdf->SetFont($fontName, 'B', 10);

@@ -127,7 +127,7 @@ if (!isset($_SESSION['user_id'])) {
                                             };
 
                                             $odemeDurumu = match ($row['hangikargo']) {
-                                                'Yunus Emre - PTT' => 'Yunus Emre',
+                                                'MeyruKids' => 'Yunus Emre',
                                                 'Sevim Aydın - PTT' => 'Sevim Aydın',
 												'Yunus Emre - Hepsijet' => 'HepsiJET',
                                                 '' => 'İkas',

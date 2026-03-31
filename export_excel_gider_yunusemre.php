@@ -31,7 +31,7 @@ try {
 
     $query = "SELECT id, siparis_tarihi, hangisayfa, musteri_ismi, musteri_telefonu, musteri_adresi, musteri_il, musteri_ilce, urunler, odeme_sarti, hangikargo, kargo_barkodu , parasut_fatura_numarasi
               FROM siparisler 
-              WHERE iptalmi = 1 AND kargo='Ödeme Şartlı' AND hangikargo='Yunus Emre - PTT'";
+              WHERE iptalmi = 1 AND kargo='Ödeme Şartlı' AND hangikargo='MeyruKids'";
 
     $result = $db->query($query);
 

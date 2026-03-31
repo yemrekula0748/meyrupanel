@@ -120,7 +120,7 @@ require_once 'DB.php';
                                             };
 
                                             $odemeDurumu = match ($row['hangikargo']) {
-                                                                'Yunus Emre - PTT' => 'Yunus Emre',
+                                                                'MeyruKids' => 'Yunus Emre',
 																'Yunus Emre - Hepsijet' => 'YunusEmreHJ',
                                                                 'Sevim Aydın - PTT' => 'Sevim Aydın',
                                                                 '' => 'İkas',

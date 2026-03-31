@@ -16,7 +16,7 @@ $client = new Client([
     "password" => "230819", // Parola
     "grant_type" => "password", // Sabit bir değer
     "redirect_uri" => "urn:ietf:wg:oauth:2.0:oob", // Sabit bir değer
-    'company_id' => "50038" // Şirket ID'niz
+    'company_id' => "624505" // Şirket ID'niz
 ]);
 
 // Veritabanı bağlantısını oluştur
@@ -26,7 +26,7 @@ $db = new DB();
 $query = "
     SELECT * FROM siparisler 
     WHERE faturalandirma_durumu = 'Faturalandırılmadı' 
-      AND hangikargo = 'Yunus Emre - PTT' 
+      AND hangikargo = 'MeyruKids' 
       AND kargo = 'Ödeme Şartlı'
 ";
 $siparisler = $db->query($query);
@@ -56,7 +56,7 @@ while ($siparis = $siparisler->fetch_assoc()) {
                 'description' => 'Açıklama', // Burayı istediğiniz açıklama ile değiştirebilirsiniz
                 'issue_date' => $currentDate,
                 'due_date' => $currentDate,
-                'invoice_series' => 'SM',
+                'invoice_series' => 'MEY',
                 'invoice_id' => $invoiceId,
                 'currency' => 'TRL'
             ],
@@ -97,7 +97,7 @@ while ($siparis = $siparisler->fetch_assoc()) {
         $invoiceResponse = $client->call(Invoice::class)->create($invoice);
 
         // Fatura ID'sini alıyoruz
-        $generatedInvoiceId = "SM" . $invoice['data']['attributes']['invoice_id'];
+        $generatedInvoiceId = "MEY" . $invoice['data']['attributes']['invoice_id'];
 
         // Oluşturulan fatura bilgilerini veritabanına kaydet
         $updateQuery = "

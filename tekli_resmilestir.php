@@ -13,7 +13,7 @@ if ($id > 0) {
         $db->query($sql, [$id], "i"); // Parametreyi hazırlıklı sorgu ile gönderiyoruz.
 
         // Eğer sorgu başarılı olduysa, resmilestir_cron.php sayfasına istek gönderiyoruz.
-        $cronUrl = "https://semre.hpanel.com.tr/resmilestir_cron.php";
+        $cronUrl = "https://meyrupanel.com.tr/resmilestir_cron.php";
         $ch = curl_init($cronUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, false); // Yanıt beklenmiyor.
         curl_setopt($ch, CURLOPT_HEADER, false); // HTTP başlıklarını alma.

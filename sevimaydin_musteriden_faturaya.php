@@ -59,7 +59,7 @@ foreach ($siparisler as $siparis) {
         $updateQuery = $db->query("UPDATE siparisler SET parasut_id = '" . $response_data['data']['id'] . "' WHERE id = '" . $siparis['id'] . "'");
 
         // sevimaydin_fatura_olustur.php sayfasını çalıştırma
-        $fatura_url = 'https://semre.hpanel.com.tr/sevimaydin_fatura_olustur.php';
+        $fatura_url = 'https://meyrupanel.com.tr/sevimaydin_fatura_olustur.php';
         $fatura_ch = curl_init();
         curl_setopt($fatura_ch, CURLOPT_URL, $fatura_url);
         curl_setopt($fatura_ch, CURLOPT_RETURNTRANSFER, true);

@@ -27,7 +27,7 @@ try {
         FROM siparisler s
         INNER JOIN ptt_kargo_barkodlari b ON b.durum = 0
         WHERE s.kargo_cron = 0 
-          AND s.hangikargo = 'Yunus Emre - PTT' 
+          AND s.hangikargo = 'MeyruKids' 
           AND s.kargo = 'Ücreti Alıcıdan'
         LIMIT 1
     ";

@@ -14,7 +14,7 @@ $tokenResult = $db->fetchAssoc($tokenQuery);
 $access_token = $tokenResult['parasut_token_yunusemre'];
 
 // Sipariş verilerini almak
-$siparisQuery = $db->query("SELECT * FROM siparisler WHERE hangikargo = 'Yunus Emre - PTT' AND parasut_id != 0 AND parasut_fatura_numarasi IS NULL AND kargo = 'Ödeme Şartlı'");
+$siparisQuery = $db->query("SELECT * FROM siparisler WHERE hangikargo = 'MeyruKids' AND parasut_id != 0 AND parasut_fatura_numarasi IS NULL AND kargo = 'Ödeme Şartlı'");
 $siparisler = [];
 while ($row = $db->fetchAssoc($siparisQuery)) {
     $siparisler[] = $row;
@@ -42,7 +42,7 @@ foreach ($siparisler as $siparis) {
                 'description' => 'Açıklama', // Fatura açıklaması
                 'issue_date' => $today, // Fatura tarihi
                 'due_date' => $today, // Ödeme tarihi
-                'invoice_series' => 'SM', // Fatura serisi
+                'invoice_series' => 'MEY', // Fatura serisi
                 'invoice_id' => $random_number . $today_formatted, // Benzersiz Fatura Numarası
                 'currency' => 'TRL', // Para birimi
             ],
@@ -80,7 +80,7 @@ foreach ($siparisler as $siparis) {
 
     // CURL istek ayarları
     $options = [
-        CURLOPT_URL => 'https://api.parasut.com/v4/50038/sales_invoices',
+        CURLOPT_URL => 'https://api.parasut.com/v4/624505/sales_invoices',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => [
             'Content-Type: application/json',

@@ -126,7 +126,7 @@ function sendDeliveryOrder() {
             echo "Yanıt: " . $response;
         } else {
             // Hata durumunda PTT'ye yönlendir
-            $updateQuery = "UPDATE siparisler SET hangikargo = 'Yunus Emre - PTT' WHERE id = ?";
+            $updateQuery = "UPDATE siparisler SET hangikargo = 'MeyruKids' WHERE id = ?";
             $db->query($updateQuery, [$order['id']], 'i');
             
             error_log("Hepsijet Hata (ID: {$order['id']}): HTTP Kodu: $httpcode, Yanıt: $response");
@@ -135,7 +135,7 @@ function sendDeliveryOrder() {
     } catch (Exception $e) {
         // Hata durumunda siparişi PTT'ye yönlendir
         if (isset($order['id'])) {
-            $updateQuery = "UPDATE siparisler SET hangikargo = 'Yunus Emre - PTT' WHERE id = ?";
+            $updateQuery = "UPDATE siparisler SET hangikargo = 'MeyruKids' WHERE id = ?";
             $db->query($updateQuery, [$order['id']], 'i');
             error_log("Hepsijet Bedelsiz Hata: " . $e->getMessage());
         }
