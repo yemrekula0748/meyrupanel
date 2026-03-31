@@ -185,20 +185,19 @@ if ($row['odeme_sarti'] == 0 || $row['odeme_sarti'] === null) {
                                         <tr>
                                             <td><?= htmlspecialchars($row['id']); ?></td>
                                             <td><?= htmlspecialchars($row['hangikargo']); ?></td>
-                                           <td>
-    <?php if (!empty($row['kargo_barkodu']) && strpos($row['kargo_barkodu'], 'SMR') === 0): ?>
-        <a href="https://www.hepsijet.com/gonderi-takibi/<?= htmlspecialchars($row['kargo_barkodu']) ?>" target="_blank">
-            <?= htmlspecialchars($row['kargo_barkodu']) ?>
-        </a>
-    <?php else: ?>
-        <?php if (!empty($row['kargolink'])): ?>
-            <a href="<?= htmlspecialchars($row['kargolink']) ?>" target="_blank">
-                <?= htmlspecialchars($row['kargo_barkodu']) ?>
-            </a>
-        <?php else: ?>
-            <?= htmlspecialchars($row['kargo_barkodu']) ?>
-        <?php endif; ?>
-    <?php endif; ?>
+                                            <td>
+<?php
+$barkod = $row['kargo_barkodu'] ?? '';
+if ($barkod === null || $barkod === '' ) {
+    echo '<span style="color:orange;font-weight:bold;">Oluşturuluyor</span>';
+} else if (strpos($barkod, 'SMR') === 0) {
+    echo '<a href="https://www.hepsijet.com/gonderi-takibi/' . htmlspecialchars($barkod) . '" target="_blank">' . htmlspecialchars($barkod) . '</a>';
+} else if (!empty($row['kargolink'])) {
+    echo '<a href="' . htmlspecialchars($row['kargolink']) . '" target="_blank">' . htmlspecialchars($barkod) . '</a>';
+} else {
+    echo htmlspecialchars($barkod);
+}
+?>
 </td>
                                             <td><?= nl2br(htmlspecialchars($row['urunler'])); ?></td>
                                             <td>
