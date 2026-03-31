@@ -12,7 +12,7 @@ try {
     $sqlSelect = "
     SELECT id, sales_invoice_id 
     FROM siparisler 
-    WHERE resmilestir = 1 
+    WHERE resmimi = 1 
       AND sales_invoice_id IS NOT NULL 
       AND iptalmi = 0 
       AND parasut_resmilesme_durumu = 0 
