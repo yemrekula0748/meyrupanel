@@ -145,8 +145,8 @@ while (true) {
             if (isset($response_data['data']['attributes']['invoice_no']) && isset($response_data['data']['id'])) {
                 $fatura_no = $response_data['data']['attributes']['invoice_no'];
                 $sales_invoice_id = $response_data['data']['id'];
-                $db->query("UPDATE siparisler SET parasut_fatura_numarasi = '" . $fatura_no . "', sales_invoice_id = '" . $sales_invoice_id . "' WHERE id = '" . $siparis['id'] . "'");
-                echo "Fatura oluşturuldu: Sipariş ID {$siparis['id']}<br>";
+                $db->query("UPDATE siparisler SET parasut_fatura_numarasi = '" . $fatura_no . "', sales_invoice_id = '" . $sales_invoice_id . "', resmimi = 1 WHERE id = '" . $siparis['id'] . "'");
+                echo "Fatura oluşturuldu ve resmimi=1 yapıldı: Sipariş ID {$siparis['id']}<br>";
             } else {
                 echo "Fatura oluşturulamadı: Sipariş ID {$siparis['id']}<br>";
             }
