@@ -84,7 +84,6 @@ require_once 'DB.php';
                                 <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>PTT</th>
                                             <th>BARKOD NO</th>
                                             <th>FATURA NO</th>
                                             <th>ÜRÜNLER</th>
@@ -139,7 +138,6 @@ require_once 'DB.php';
                                         ?>
                                             <tr>
                                                 <td><?= htmlspecialchars($row['id']) ?></td>
-                                                <td><?= htmlspecialchars($odemeDurumu) ?></td>
                                                 <td>
                                                     <?php if (!empty($row['kargolink'])): ?>
                                                         <a href="<?= htmlspecialchars($row['kargolink']) ?>" target="_blank">
