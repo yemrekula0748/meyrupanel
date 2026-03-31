@@ -189,9 +189,9 @@ while ($islemSayisi < $maxKayit) {
     curl_close($ch);
     if ($httpCode == 201 || $httpCode == 202) {
         $db->query("UPDATE siparisler SET parasut_resmilesme_durumu = 1 WHERE id = '" . $siparis['id'] . "'");
-        echo "Fatura resmileştirildi: Sipariş ID {$siparis['id']}<br>";
+        echo "BAŞARILI: Fatura resmileştirildi (ID: {$siparis['id']})<br>";
     } else {
-        echo "Fatura resmileştirilemedi: Sipariş ID {$siparis['id']}<br>";
+        echo "HATA: Fatura resmileştirilemedi (ID: {$siparis['id']}) - HTTP: $httpCode<br>";
         $db->query("UPDATE siparisler SET resmilestir = -1 WHERE id = '" . $siparis['id'] . "'");
         continue;
     }
