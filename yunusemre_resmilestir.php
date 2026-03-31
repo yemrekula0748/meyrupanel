@@ -3,41 +3,12 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once 'DB.php';
-
-try {
-    $db = new DB();
-    
-    // Uygun siparişleri seç
-    $sqlSelect = "
-    SELECT id, sales_invoice_id 
-    FROM siparisler 
-    WHERE resmimi = 1 
-      AND sales_invoice_id IS NOT NULL 
-      AND iptalmi = 0 
-      AND parasut_resmilesme_durumu = 0 
-      AND (hangikargo = 'MeyruKids' OR hangikargo = 'Yunus Emre - Hepsijet')
-";
-
-                 
-    $result = $db->query($sqlSelect);
-    
-    // Token al
-    $tokenSql = "SELECT parasut_token_yunusemre FROM parasut_token WHERE id = 1 LIMIT 1";
-    $tokenResult = $db->query($tokenSql);
-    $tokenRow = $db->fetchAssoc($tokenResult);
-    $accessToken = $tokenRow['parasut_token_yunusemre'] ?? null;
-    
-    if (!$accessToken) {
-        throw new Exception("Access token bulunamadı!");
-    }
-    
-    $company_id = "624505";
     $successCount = 0;
-    
+    $failCount = 0;
+    $failIDs = [];
+
     while ($row = $db->fetchAssoc($result)) {
         $api_url = "https://api.parasut.com/v4/$company_id/e_archives";
-        
         $data = [
             "data" => [
                 "type" => "e_archives",
@@ -51,7 +22,6 @@ try {
                 ]
             ]
         ];
-        
         $ch = curl_init($api_url);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
@@ -61,6 +31,37 @@ try {
                 'Accept: application/json'
             ],
             CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_SSL_VERIFYPEER => false
+        ]);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode == 201 || $httpCode == 202) {
+            $updateSql = "UPDATE siparisler SET parasut_resmilesme_durumu = 1 WHERE id = ?";
+            $updateResult = $db->query($updateSql, [$row['id']], 'i');
+            if($updateResult) {
+                $successCount++;
+                echo "BAŞARILI: Fatura resmileştirildi (ID: {$row['id']})<br>";
+            } else {
+                $failCount++;
+                $failIDs[] = $row['id'];
+                echo "HATA: SQL güncellenemedi (ID: {$row['id']})<br>";
+            }
+        } else {
+            $failCount++;
+            $failIDs[] = $row['id'];
+            // Hatalı kaydı işaretle
+            $db->query("UPDATE siparisler SET resmilestir = -1 WHERE id = ?", [$row['id']], 'i');
+            echo "HATA: Fatura resmileştirilemedi (ID: {$row['id']}) - HTTP: $httpCode<br>";
+        }
+    }
+
+    echo "<br>Toplam $successCount başarılı, $failCount hatalı işlem yapıldı.";
+    if ($failCount > 0) {
+        echo "<br>Resmileşmeyen sipariş ID'leri: " . implode(", ", $failIDs);
+    }
             CURLOPT_POSTFIELDS => json_encode($data),
             CURLOPT_SSL_VERIFYPEER => false
         ]);
