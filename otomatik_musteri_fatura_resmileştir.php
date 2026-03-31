@@ -18,9 +18,9 @@ $db = new DB();
 while (true) {
     $islemYapildi = false;
 
-    // 1. Müşteri oluşturulmamış sipariş
+    // 1. Müşteri oluşturulmamış sipariş (listele_meyrukids_odemeli_bekleyen.php ile aynı filtreler)
     $siparis = $db->fetchAssoc(
-        $db->query("SELECT * FROM siparisler WHERE hangikargo = 'MeyruKids' AND parasut_id = 0 LIMIT 1")
+        $db->query("SELECT * FROM siparisler WHERE parasut_resmilesme_durumu = 0 AND iptalmi = 0 AND hangikargo = 'MeyruKids' AND (parasut_fatura_numarasi IS NULL OR parasut_fatura_numarasi = '') AND (sales_invoice_id IS NULL OR sales_invoice_id = '') AND resmimi = 0 AND resmilestir = 0 AND kargo = 'Ödeme Şartlı' AND parasut_id = 0 LIMIT 1")
     );
     if ($siparis) {
         // Parasut token
