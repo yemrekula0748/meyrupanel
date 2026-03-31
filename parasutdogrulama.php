@@ -8,7 +8,7 @@ $data = [
     "client_id" => "pj6IOLrtu97oRe1qD3clLcTuVHEAgGBl4P3uaSNfdBU",
     "client_secret" => "aVCq_R1DXyGHqVuO7e1rJ1QcBZb0cr8ACNtiKSgTG_o",
     "username" => "svmagrmn@hotmail.com",
-    "password" => "230819",
+    "password" => "Ebru1989",
     "redirect_uri" => "urn:ietf:wg:oauth:2.0:oob"
 ];
 

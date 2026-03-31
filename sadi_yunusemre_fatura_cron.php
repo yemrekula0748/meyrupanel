@@ -52,7 +52,7 @@ LIMIT 2;");
                     'description' => 'Açıklama', // Fatura açıklaması
                     'issue_date' => $today, // Fatura tarihi
                     'due_date' => $today, // Ödeme tarihi
-                    'invoice_series' => 'SM', // Fatura serisi
+                    'invoice_series' => 'MEY', // Fatura serisi
                     'invoice_id' => $random_number . $today_formatted, // Benzersiz Fatura Numarası
                     'currency' => 'TRL', // Para birimi
                 ],
@@ -70,7 +70,7 @@ LIMIT 2;");
                                 'relationships' => [
                                     'product' => [
                                         'data' => [
-                                            'id' => '63211935', // Parasut'taki ürün ID'si
+                                            'id' => '1006666676', // Parasut'taki ürün ID'si
                                             'type' => 'products',
                                         ],
                                     ],

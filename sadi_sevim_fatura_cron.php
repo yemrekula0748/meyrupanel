@@ -47,7 +47,7 @@ foreach ($siparisler as $siparis) {
                 'description' => 'Açıklama',
                 'issue_date' => $today,
                 'due_date' => $today,
-                'invoice_series' => 'SM',
+                'invoice_series' => 'MEY',
                 'invoice_id' => $random_number . $today_formatted,
                 'currency' => 'TRL',
             ],

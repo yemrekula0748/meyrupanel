@@ -11,8 +11,8 @@ $data = [
     "grant_type" => "password",
     "client_id" => "EarLX0fCgD1U9eCDkeOZRriiymQVh2y915ASLDJRavo",
     "client_secret" => "_BmN5Hm90JSqIIqckkMnhmQzaJToz6piNRc0M1lIE58",
-    "username" => "emre_ajan_007@hotmail.com",
-    "password" => "230819",
+    "username" => "meyrukids@gmail.com",
+    "password" => "Ebru1989",
     "redirect_uri" => "urn:ietf:wg:oauth:2.0:oob"
 ];
 

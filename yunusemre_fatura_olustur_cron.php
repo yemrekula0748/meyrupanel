@@ -67,7 +67,7 @@ foreach ($siparisler as $siparis) {
                             'relationships' => [
                                 'product' => [
                                     'data' => [
-                                        'id' => '63211935', // Parasut'taki ürün ID'si
+                                        'id' => '1006666676', // Parasut'taki ürün ID'si
                                         'type' => 'products',
                                     ],
                                 ],

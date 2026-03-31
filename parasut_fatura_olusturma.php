@@ -10,8 +10,8 @@ use Parasut\Invoice;
 // Parasut API istemcisini başlatıyoruz
 $client = new Client([
     "client_id" => "pj6IOLrtu97oRe1qD3clLcTuVHEAgGBl4P3uaSNfdBU", // Parasut uygulamanızın Client ID'si
-    "username" => "emre_ajan_007@hotmail.com",  // Parasut kullanıcı adınız (e-posta)
-    "password" => "230819", // Parola
+    "username" => "meyrukids@gmail.com",  // Parasut kullanıcı adınız (e-posta)
+    "password" => "Ebru1989", // Parola
     "grant_type" => "password", // Sabit bir değer
     "redirect_uri" => "urn:ietf:wg:oauth:2.0:oob", // Sabit bir değer
     'company_id' => "624505" // Şirket ID'niz
@@ -45,7 +45,7 @@ $invoice = [
                        "relationships" => [
                            "product" => [
                                "data" => [
-                                   "id" => "63211935", // Parasut'taki ürün ID'si
+                                   "id" => "1006666676", // Parasut'taki ürün ID'si
                                    "type" => "products" // Sabit bir değer
                                ]
                            ]

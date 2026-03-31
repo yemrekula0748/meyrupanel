@@ -14,8 +14,8 @@ use Parasut\Account;
 // Parasut Client ayarları
 $client = new Client([
     "client_id" => "pj6IOLrtu97oRe1qD3clLcTuVHEAgGBl4P3uaSNfdBU",
-    "username" => "emre_ajan_007@hotmail.com",
-    "password" => "230819",
+    "username" => "meyrukids@gmail.com",
+    "password" => "Ebru1989",
     "grant_type" => "password",
     "redirect_uri" => "urn:ietf:wg:oauth:2.0:oob",
     'company_id' => "624505"
