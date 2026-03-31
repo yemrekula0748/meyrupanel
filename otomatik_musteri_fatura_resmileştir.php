@@ -92,7 +92,7 @@ while ($islemSayisi < $maxKayit) {
                 'description' => 'Açıklama',
                 'issue_date' => $today,
                 'due_date' => $today,
-                'invoice_series' => 'MEY',
+                'invoice_series' => 'EA',
                 'invoice_id' => $random_number . $today_formatted,
                 'currency' => 'TRL',
             ],
@@ -190,8 +190,10 @@ while ($islemSayisi < $maxKayit) {
     if ($httpCode == 201 || $httpCode == 202) {
         $db->query("UPDATE siparisler SET parasut_resmilesme_durumu = 1 WHERE id = '" . $siparis['id'] . "'");
         echo "BAŞARILI: Fatura resmileştirildi (ID: {$siparis['id']})<br>";
+        echo '<pre>API JSON Yanıtı: ' . htmlspecialchars($response) . '</pre>';
     } else {
         echo "HATA: Fatura resmileştirilemedi (ID: {$siparis['id']}) - HTTP: $httpCode<br>";
+        echo '<pre>API JSON Yanıtı: ' . htmlspecialchars($response) . '</pre>';
         $db->query("UPDATE siparisler SET resmilestir = -1 WHERE id = '" . $siparis['id'] . "'");
         continue;
     }
@@ -200,4 +202,3 @@ while ($islemSayisi < $maxKayit) {
     bekle(2);
 }
 ?>
-            echo "Fatura resmileştirildi: Sipariş ID {$siparis['id']}<br>";
