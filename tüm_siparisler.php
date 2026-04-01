@@ -47,7 +47,8 @@ $query = "
         musteri_adresi,
         resmilestir,
         kargolink,
-        parasut_resmilesme_durumu
+        parasut_resmilesme_durumu,
+        yunusemrekula
     FROM siparisler
     WHERE iptalmi = 0 
     AND DATE(siparis_tarihi) = '$date'  -- Tarih filtresi eklendi
