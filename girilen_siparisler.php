@@ -2744,22 +2744,51 @@ function resmilestir(id) {
             $("#guncelleBtn").click(function() {
                 $.ajax({
                     type: "POST",
-                    url: "siparisresmilestirmeislemi.php",
+                    url: "resmilestir_yunusemre_islem.php",
+                    data: { action: "count" },
                     dataType: "json",
                     success: function(response) {
-                        if (response.status === "success") {
-                            let mesaj = `<h3>${response.message}</h3><p>Paraşüt otomatik olarak kısa bir süre sonra işleme alacaktır.</p><ul>`;
-                            response.musteriler.forEach(function(musteri) {
-                                mesaj += `<li>${musteri}</li>`;
+                        var sayi = response.count;
+                        if (sayi === 0) {
+                            Swal.fire({
+                                title: 'Kayıt Bulunamadı',
+                                text: 'Resmileştirilecek uygun sipariş bulunmamaktadır.',
+                                icon: 'info',
+                                confirmButtonText: 'Tamam'
                             });
-                            mesaj += "</ul>";
-                            $("#sonuc").html(mesaj);
-                        } else {
-                            $("#sonuc").html(`<p style="color:red;">${response.message}</p>`);
+                            return;
                         }
+                        Swal.fire({
+                            title: 'Resmileştirme Onayı',
+                            text: sayi + ' adet sipariş resmileştirme işlemi yapılacak. Onaylıyor musunuz?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Evet, Onayla',
+                            cancelButtonText: 'İptal'
+                        }).then(function(result) {
+                            if (result.isConfirmed) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "resmilestir_yunusemre_islem.php",
+                                    data: { action: "update" },
+                                    dataType: "json",
+                                    success: function() {
+                                        Swal.fire({
+                                            title: 'Başarılı!',
+                                            text: sayi + ' sipariş resmileştirme kuyruğuna alındı.',
+                                            icon: 'success',
+                                            confirmButtonText: 'Tamam'
+                                        });
+                                    },
+                                    error: function() {
+                                        Swal.fire('Hata', 'Güncelleme sırasında bir hata oluştu.', 'error');
+                                    }
+                                });
+                            }
+                        });
                     },
                     error: function() {
-                        $("#sonuc").html("<p style='color:red;'>Bir hata oluştu. Lütfen tekrar deneyin.</p>");
+                        Swal.fire('Hata', 'Sipariş sayısı alınamadı. Lütfen tekrar deneyin.', 'error');
                     }
                 });
             });
