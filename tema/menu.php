@@ -260,21 +260,13 @@ try {
     <div class="h-100" data-simplebar>
         <div id="sidebar-menu">
             <div class="logo-box">
-                <a href="index.php" class="logo logo-light">
-                    <span class="logo-sm">
-                        <img src="assets/images/logo-sm.png" alt="" height="22">
-                    </span>
-                    <span class="logo-lg">
-                        <img src="assets/images/logo-light.png" alt="" height="24">
-                    </span>
+                <a href="index.php" class="logo logo-light text-decoration-none">
+                    <span class="logo-sm" style="font-family:'Inter',sans-serif;font-weight:800;font-size:1rem;color:#c41a1a;letter-spacing:-0.5px;">MK</span>
+                    <span class="logo-lg" style="font-family:'Inter',sans-serif;font-weight:800;font-size:1.15rem;color:#c41a1a;letter-spacing:-0.5px;">MeyruKids</span>
                 </a>
-                <a href="index.php" class="logo logo-dark">
-                    <span class="logo-sm">
-                        <img src="assets/images/logo-sm.png" alt="" height="22">
-                    </span>
-                    <span class="logo-lg">
-                        <img src="assets/images/logo-dark.png" alt="" height="24">
-                    </span>
+                <a href="index.php" class="logo logo-dark text-decoration-none">
+                    <span class="logo-sm" style="font-family:'Inter',sans-serif;font-weight:800;font-size:1rem;color:#c41a1a;letter-spacing:-0.5px;">MK</span>
+                    <span class="logo-lg" style="font-family:'Inter',sans-serif;font-weight:800;font-size:1.15rem;color:#c41a1a;letter-spacing:-0.5px;">MeyruKids</span>
                 </a>
             </div>
 
