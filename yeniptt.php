@@ -8,8 +8,8 @@ try {
     // PTT API istemcisi
     $ptt = (new PttVeriYukle2())
         ->kullanici('PttWs') // Kullanıcı adı
-        ->sifre('sGG62WGcR7X3kjRJTJbHQ') // Şifre
-        ->musteriId('402955632') // Müşteri ID
+        ->sifre('JQkoqaMXDzK0I1YIHR4jA') // Şifre
+        ->musteriId('704992342') // Müşteri ID
         ->dosyaAdi('dosyaAdi-' . date('Ymd-His')) // Dinamik dosya adı
         ->gonderiTur('KARGO') // Gönderi türü
         ->gonderiTip('NORMAL'); // Gönderi tipi
@@ -36,14 +36,14 @@ try {
         ->yukseklik(1)
         ->desi(1)
         ->gondericiBilgi([
-            'gonderici_adi' => 'S. AYDIN TEKSTİL GİYİM',
-            'gonderici_adresi' => 'Baraj mahallesi kırçiçeği caddesi 1A+2A blok no 104/A',
+            'gonderici_adi' => 'Merve İncir - Meyrukids',
+            'gonderici_adresi' => 'varsak Süleyman Demirel bulvarı Karşıyaka mahallesi no 137 A kepez Antalya',
             'gonderici_il_ad' => 'Antalya',
             'gonderici_ilce_ad' => 'Kepez'
         ])
         ->odeme_sart_ucreti($row['odeme_sart_ucreti'])
-        ->rezerve1('14086565')
-        ->rezerve2('14086565')
+        ->rezerve1('18038415')
+        ->rezerve2('18038415')
         ->aliciSms($row['aliciSms'])
         ->ekhizmet('OS')
         ->ekle();

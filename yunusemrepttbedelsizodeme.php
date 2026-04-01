@@ -59,8 +59,8 @@ try {
                     'yukseklik' => 1,
                     'desi' => 1,
                     'gondericiBilgi' => [
-                        'gonderici_adi' => 'S. AYDIN TEKSTİL GİYİM',
-                        'gonderici_adresi' => 'Baraj mahallesi kırçiçeği caddesi 1A+2A blok no 104/A',
+                        'gonderici_adi' => 'Merve İncir - Meyrukids',
+                        'gonderici_adresi' => 'varsak Süleyman Demirel bulvarı Karşıyaka mahallesi no 137 A kepez Antalya',
                         'gonderici_il_ad' => 'Antalya',
                         'gonderici_ilce_ad' => 'Kepez'
                     ],
@@ -71,8 +71,8 @@ try {
                 'gonderiTip' => 'NORMAL',
                 'gonderiTur' => 'KARGO',
                 'kullanici' => 'PttWs',
-                'sifre' => 'sGG62WGcR7X3kjRJTJbHQ',
-                'musteriId' => '402955632'
+                'sifre' => 'JQkoqaMXDzK0I1YIHR4jA',
+                'musteriId' => '704992342'
             ]
         ];
 

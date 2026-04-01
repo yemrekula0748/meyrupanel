@@ -18,7 +18,7 @@ try {
     if ($siparisler->num_rows > 0) {
         // PTT Kargo API nesnesini hazırla
         $ptt = (new PttVeriYukle2())
-            ->kullanici('402955632') // Kullanıcı adı
+            ->kullanici('704992342') // Kullanıcı adı
             ->sifre('J3fbefKlzi5oBOfMsWQ') // Şifre
             ->musteriId('703083141') // Müşteri ID
             ->dosyaAdi(date('Ymd-His-') . uniqid()) // Dosya adı

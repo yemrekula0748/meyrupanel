@@ -14,8 +14,8 @@ try {
     $params = [
         'input' => [
             'kullanici' => 'pttws',
-            'sifre' => 'sGG62WGcR7X3kjRJTJbHQ',
-            'musteriId' => 402955632,
+            'sifre' => 'JQkoqaMXDzK0I1YIHR4jA',
+            'musteriId' => 704992342,
             'dosyaAdi' => 'kargo_dosyasi',
             'gonderiTip' => 'Paket',
             'gonderiTur' => 'Normal',
