@@ -51,7 +51,7 @@ curl_setopt_array($ch, [
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => json_encode([
         'query'     => $query,
-        'variables' => ['pagination' => ['page' => $page, 'limit' => $limit, 'sort' => ['field' => 'createdAt', 'order' => 'DESC']]],
+        'variables' => ['pagination' => ['page' => $page, 'limit' => $limit]],
     ]),
     CURLOPT_HTTPHEADER => [
         'Authorization: Bearer ' . $access_token,
@@ -74,6 +74,7 @@ if ($curlError) {
         $apiError = $data['errors'][0]['message'] ?? 'Bilinmeyen API hatası';
     } else {
         $orders = $data['data']['listOrder']['data'] ?? [];
+        usort($orders, fn($a, $b) => ($b['createdAt'] ?? 0) <=> ($a['createdAt'] ?? 0));
     }
 }
 
