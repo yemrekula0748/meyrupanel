@@ -16,7 +16,36 @@ $access_token = $tokenRow['token'] ?? '';
 $page  = max(1, (int)($_GET['page'] ?? 1));
 $limit = 50;
 
-// GraphQL sorgusu
+$apiHeaders = [
+    'Authorization: Bearer ' . $access_token,
+    'Content-Type: application/json',
+];
+
+// Adım 1 — Toplam sipariş sayısını al
+$countQuery = 'query { listOrder(pagination: {page: 1, limit: 1}) { count } }';
+$ch = curl_init();
+curl_setopt_array($ch, [
+    CURLOPT_URL            => 'https://api.myikas.com/api/v1/admin/graphql',
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST           => true,
+    CURLOPT_POSTFIELDS     => json_encode(['query' => $countQuery]),
+    CURLOPT_HTTPHEADER     => $apiHeaders,
+]);
+$countJson = curl_exec($ch);
+curl_close($ch);
+
+$totalCount = 0;
+$countData  = json_decode($countJson, true);
+if (isset($countData['data']['listOrder']['count'])) {
+    $totalCount = (int)$countData['data']['listOrder']['count'];
+}
+$totalPages = $totalCount > 0 ? (int)ceil($totalCount / $limit) : 1;
+$page       = min($page, $totalPages); // sayfa sınırını aş
+
+// Kullanıcının sayfa 1'i = API'nin son sayfası (en yeni kayıtlar)
+$apiPage = max(1, $totalPages - $page + 1);
+
+// Adım 2 — Gerçek verileri doğru sayfadan çek
 $query = <<<'GQL'
 query listOrder($pagination: PaginationInput!) {
     listOrder(pagination: $pagination) {
@@ -51,12 +80,9 @@ curl_setopt_array($ch, [
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => json_encode([
         'query'     => $query,
-        'variables' => ['pagination' => ['page' => $page, 'limit' => $limit]],
+        'variables' => ['pagination' => ['page' => $apiPage, 'limit' => $limit]],
     ]),
-    CURLOPT_HTTPHEADER => [
-        'Authorization: Bearer ' . $access_token,
-        'Content-Type: application/json',
-    ],
+    CURLOPT_HTTPHEADER => $apiHeaders,
 ]);
 
 $response  = curl_exec($ch);
@@ -74,6 +100,7 @@ if ($curlError) {
         $apiError = $data['errors'][0]['message'] ?? 'Bilinmeyen API hatası';
     } else {
         $orders = $data['data']['listOrder']['data'] ?? [];
+        // API en eskiden en yeniye döndürür; sayfayı ters çevirerek en yeni üste gelsin
         usort($orders, fn($a, $b) => ($b['createdAt'] ?? 0) <=> ($a['createdAt'] ?? 0));
     }
 }
@@ -133,13 +160,13 @@ $paymentLabels = [
 
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">Sipariş Listesi — Sayfa <?= $page ?></h5>
+                        <h5 class="card-title mb-0">Sipariş Listesi — Sayfa <?= $page ?> / <?= $totalPages ?> (<?= $totalCount ?> sipariş)</h5>
                         <div class="d-flex gap-2">
                             <?php if ($page > 1): ?>
-                                <a href="?page=<?= $page - 1 ?>" class="btn btn-cs-outline btn-sm">&#8249; Önceki</a>
+                                <a href="?page=<?= $page - 1 ?>" class="btn btn-cs-outline btn-sm">&#8249; Önceki (Yeni)</a>
                             <?php endif; ?>
-                            <?php if (count($orders) === $limit): ?>
-                                <a href="?page=<?= $page + 1 ?>" class="btn btn-cs-outline btn-sm">Sonraki &#8250;</a>
+                            <?php if ($page < $totalPages): ?>
+                                <a href="?page=<?= $page + 1 ?>" class="btn btn-cs-outline btn-sm">Sonraki (Eski) &#8250;</a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -164,7 +191,7 @@ $paymentLabels = [
                                 </thead>
                                 <tbody>
                                 <?php
-                                $counter = ($page - 1) * $limit + 1;
+                                $counter = $totalCount - ($page - 1) * $limit;
                                 foreach ($orders as $order):
                                     $firstName = $order['billingAddress']['firstName'] ?? '';
                                     $lastName  = $order['billingAddress']['lastName'] ?? '';
@@ -186,7 +213,7 @@ $paymentLabels = [
                                     $urunlerStr = implode('<br>', $urunler);
                                 ?>
                                     <tr>
-                                        <td><?= $counter++ ?></td>
+                                        <td><?= $counter-- ?></td>
                                         <td><strong><?= htmlspecialchars($order['orderNumber'] ?? '') ?></strong></td>
                                         <td><?= htmlspecialchars($musteri) ?></td>
                                         <td><?= htmlspecialchars($telefon) ?></td>
@@ -206,10 +233,10 @@ $paymentLabels = [
 
                 <div class="d-flex justify-content-center mt-3 gap-2">
                     <?php if ($page > 1): ?>
-                        <a href="?page=<?= $page - 1 ?>" class="btn btn-cs-outline">&#8249; Önceki</a>
+                        <a href="?page=<?= $page - 1 ?>" class="btn btn-cs-outline">&#8249; Önceki (Yeni)</a>
                     <?php endif; ?>
-                    <?php if (count($orders) === $limit): ?>
-                        <a href="?page=<?= $page + 1 ?>" class="btn btn-cs-outline">Sonraki &#8250;</a>
+                    <?php if ($page < $totalPages): ?>
+                        <a href="?page=<?= $page + 1 ?>" class="btn btn-cs-outline">Sonraki (Eski) &#8250;</a>
                     <?php endif; ?>
                 </div>
 
