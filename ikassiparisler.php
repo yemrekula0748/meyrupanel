@@ -117,11 +117,6 @@ $toplamSayim = $db->query("SELECT COUNT(*) AS c FROM ikas_bekleyen")->fetch_asso
                     <?php if ($hata_sayisi > 0): ?>
                         <br><span class="text-danger"><?= $hata_sayisi ?> sipariş eklenirken hata oluştu.</span>
                     <?php endif; ?>
-                    <span class="ms-3 text-muted" style="font-size:.82rem;">Toplam <strong><?= $toplamSayim ?></strong> kayıt</span>�m 2400+ siparisler zaten kayitli.)
-                    <?php endif; ?>
-                    <?php if ($hata_sayisi > 0): ?>
-                        <br><span class="text-danger"><?= $hata_sayisi ?> siparis eklenirken hata olustu.</span>
-                    <?php endif; ?>
                     <span class="ms-3 text-muted" style="font-size:.82rem;">Toplam <strong><?= $toplamSayim ?></strong> kayıt</span>
                 </div>
 
