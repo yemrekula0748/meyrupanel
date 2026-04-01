@@ -82,28 +82,30 @@ $result = $db->query($query);
     <!-- App css -->
     <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-style" />
     <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .table-dark {
-            background-color: #343a40;
-            color: #fff;
+        body {
+            background-color: #f5f5f5 !important;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c41a1a' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") !important;
         }
-        .table-dark th {
-            background-color: #454d55;
-            color: #fff;
-        }
-        .badge {
-            font-size: 0.8rem;
-            padding: 5px 10px;
-        }
-        .btn-red {
-            background-color: #dc3545;
-            color: white;
-        }
-        .btn-red:hover {
-            background-color: #c82333;
-            color: white;
-        }
+        body, .content-page, .content, .container-fluid { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif !important; }
+        .card { border-radius: 1rem !important; border: none !important; box-shadow: 0 4px 6px -1px rgba(196,26,26,0.08), 0 10px 30px -5px rgba(196,26,26,0.10) !important; }
+        .card-header { background: linear-gradient(135deg, #c41a1a 0%, #8b0f0f 100%) !important; border-radius: 1rem 1rem 0 0 !important; padding: 14px 20px !important; border: none !important; }
+        .card-header .card-title { color: #fff !important; font-family: 'Inter', sans-serif !important; font-weight: 700 !important; font-size: 1rem !important; margin: 0 !important; }
+        .table thead th { background: linear-gradient(135deg, #c41a1a 0%, #8b0f0f 100%) !important; color: #fff !important; font-family: 'Inter', sans-serif !important; font-weight: 600 !important; font-size: 0.75rem !important; text-transform: uppercase !important; letter-spacing: 0.05em !important; white-space: nowrap !important; border: none !important; padding: 12px 10px !important; }
+        .table tbody td { font-family: 'Inter', sans-serif !important; font-size: 0.84rem !important; vertical-align: middle !important; color: #374151 !important; border-color: #f3f4f6 !important; }
+        .table tbody tr:hover td { background-color: #fff5f5 !important; }
+        .cs-page-title { display: inline-flex; align-items: center; gap: 10px; font-family: 'Inter', sans-serif !important; font-weight: 700 !important; color: #c41a1a !important; }
+        .cs-page-title-bar { width: 4px; height: 28px; background: linear-gradient(135deg, #c41a1a, #8b0f0f); border-radius: 4px; display: inline-block; }
+        .form-control, .form-select { font-family: 'Inter', sans-serif !important; border-radius: 0.5rem !important; font-size: 0.85rem !important; }
+        .form-control:focus, .form-select:focus { border-color: #c41a1a !important; box-shadow: 0 0 0 3px rgba(196,26,26,0.12) !important; }
+        .btn-cs-primary { background: linear-gradient(135deg, #c41a1a 0%, #8b0f0f 100%) !important; border: none !important; border-radius: 0.65rem !important; color: #fff !important; font-family: 'Inter', sans-serif !important; font-weight: 600 !important; font-size: 0.85rem !important; padding: 8px 18px !important; box-shadow: 0 2px 8px rgba(196,26,26,0.25) !important; transition: opacity 0.15s !important; }
+        .btn-cs-primary:hover { opacity: 0.88 !important; color: #fff !important; }
+        .badge { font-family: 'Inter', sans-serif !important; font-weight: 600 !important; border-radius: 9999px !important; }
+        .page-link { font-family: 'Inter', sans-serif !important; }
+        .page-item.active .page-link { background-color: #c41a1a !important; border-color: #c41a1a !important; }
+        .page-link:hover { color: #c41a1a !important; }
+        .btn-success.rounded-pill, .btn-dark.rounded-pill, .btn-warning.rounded-pill { font-family: 'Inter', sans-serif !important; font-weight: 600 !important; font-size: 0.78rem !important; }
     </style>
 </head>
 <body data-menu-color="light" data-sidebar="default">
@@ -114,15 +116,17 @@ $result = $db->query($query);
                 <div class="container-fluid">
                     <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                         <div class="flex-grow-1">
-                            <h4 class="fs-18 fw-semibold m-0">Tüm Siparişler</h4>
+                            <h4 class="fs-18 m-0 cs-page-title">
+                                <span class="cs-page-title-bar"></span>
+                                Tüm Siparişler
+                            </h4>
                         </div>
                     </div>
                 
                 <!-- Arama ve Tarih Seçimi -->
-                <form method="GET" class="mb-4 d-flex align-items-center">
-                    <input type="date" name="date" class="form-control me-3" value="<?= htmlspecialchars($date); ?>" required>
-                    <!-- <input type="text" name="search" class="form-control me-3" placeholder="Müşteri adı ara" value="<?= htmlspecialchars($search); ?>">-->
-                    <button type="submit" class="btn btn-primary">Ara</button>
+                <form method="GET" class="mb-4 d-flex align-items-center" style="gap:10px;">
+                    <input type="date" name="date" class="form-control" style="max-width:200px;" value="<?= htmlspecialchars($date); ?>" required>
+                    <button type="submit" class="btn btn-cs-primary">Ara</button>
                 </form>
 
                 <!-- Sipariş Tablosu -->
