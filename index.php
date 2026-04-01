@@ -15,60 +15,148 @@
         <!-- App favicon -->
         <link rel="shortcut icon" href="assets/images/favicon.ico">
 
+        <!-- App css -->
+        <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-style" />
 
-        <!-- Tailwind ve login ile uyumlu stiller -->
-        <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Icons -->
+        <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+
+        <!-- Inter Font (login.php ile uyumlu) -->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-        <style>
-            body {
-                background-color: #f5f5f5;
-                background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c41a1a' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-                font-family: 'Inter', sans-serif;
-            }
-            .card-shadow {
-                box-shadow: 0 4px 6px -1px rgba(196,26,26,0.1), 0 20px 60px -10px rgba(196,26,26,0.15);
-            }
-            .header-bar {
-                background: linear-gradient(135deg, #c41a1a 0%, #8b0f0f 100%);
-            }
-        </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <style>
+        /* === login.php ile görsel uyum === */
+        body, .content-page, .content, .container-fluid {
+            font-family: 'Inter', ui-sans-serif, system-ui, sans-serif !important;
+        }
+
+        /* Arka plan deseni (login.php ile aynı) */
+        body {
+            background-color: #f5f5f5 !important;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c41a1a' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") !important;
+        }
+
+        /* Kart stili (login.php card-shadow ile uyumlu) */
+        .card {
+            border-radius: 1rem !important;
+            border: none !important;
+            box-shadow: 0 4px 6px -1px rgba(196,26,26,0.08), 0 10px 30px -5px rgba(196,26,26,0.10) !important;
+        }
+
+        /* İstatistik başlık barı */
+        .crimson-header-bar {
+            background: linear-gradient(135deg, #c41a1a 0%, #8b0f0f 100%);
+            border-radius: 1rem 1rem 0 0;
+            padding: 18px 24px 14px 24px;
+            margin: -1px -1px 0 -1px;
+        }
+        .crimson-header-bar h4 {
+            color: #fff !important;
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+
+        /* Widget ikon arka planları */
+        .widget-size {
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Boşalt butonu */
+        #clearOrders {
+            background: linear-gradient(135deg, #c41a1a 0%, #8b0f0f 100%) !important;
+            border: none !important;
+            border-radius: 0.75rem !important;
+            font-family: 'Inter', sans-serif !important;
+            font-weight: 600 !important;
+            padding: 10px 22px !important;
+            box-shadow: 0 4px 12px rgba(196,26,26,0.25) !important;
+            transition: opacity 0.15s !important;
+        }
+        #clearOrders:hover { opacity: 0.9 !important; }
+
+        /* Kart içi tipografi */
+        .card-body p.fs-15, .card-body p.fs-13 {
+            font-family: 'Inter', sans-serif !important;
+        }
+        .card-body h3.fs-22 {
+            font-family: 'Inter', sans-serif !important;
+            font-weight: 700 !important;
+        }
+
+        /* Sayfa başlığı alanı */
+        .py-3 h4.fs-18 {
+            font-family: 'Inter', sans-serif !important;
+            font-weight: 700 !important;
+            color: #c41a1a !important;
+        }
+    </style>
+
     </head>
 
-    <body class="min-h-screen flex items-center justify-center px-4 py-10">
+    <!-- body start -->
+    <body data-menu-color="light" data-sidebar="default"
+
+        <!-- Begin page -->
+        <div id="app-layout">
 
 
+<?php
+include 'tema/menu.php';
+include 'fonksiyon.php';
+$unprocessedOrderCount = getUnprocessedOrderCount($db);
 
-    <div class="w-full max-w-2xl">
-        <div class="bg-white rounded-2xl overflow-hidden card-shadow">
-            <div class="header-bar px-8 py-7 text-center">
-                <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/20 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <h1 class="text-2xl font-bold text-white tracking-tight">Satış Paneli Anasayfa</h1>
-                <p class="text-red-200 mt-1 text-sm">Hoş geldiniz! Aşağıda özet istatistikleri görebilirsiniz.</p>
-            </div>
-            <div class="px-8 py-7">
-                <?php
-                include 'fonksiyon.php';
-                $unprocessedOrderCount = getUnprocessedOrderCount($db);
-                ?>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-crimson-50 rounded-xl p-6 flex flex-col items-center justify-center">
-                        <div class="text-crimson-600 text-4xl font-bold mb-2">
-                            <?= $unprocessedOrderCount ?>
+?>
+            
+
+            <!-- ============================================================== -->
+            <!-- BOŞ SAYFA BAŞLANGIÇ -->
+            <!-- ============================================================== -->
+         
+   
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                        <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+                            <div class="flex-grow-1">
+                                <div class="d-inline-flex align-items-center gap-2">
+                                    <div style="width:4px;height:28px;background:linear-gradient(135deg,#c41a1a,#8b0f0f);border-radius:4px;"></div>
+                                    <h4 class="fs-18 fw-semibold m-0" style="font-family:'Inter',sans-serif;font-weight:700;color:#c41a1a;">İstatistik</h4>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-gray-700 text-sm font-semibold">İşlenmemiş Sipariş</div>
-                    </div>
-                    <!-- Diğer istatistik kutuları buraya eklenebilir -->
-                </div>
-                <div class="mt-8 text-center">
-                    <a href="girilen_siparisler.php" class="inline-block bg-crimson-600 hover:bg-crimson-700 text-white font-semibold rounded-xl px-6 py-3 transition-all duration-150 shadow-md">Siparişleri Görüntüle</a>
-                </div>
-            </div>
-        </div>
-    </div>
+
+                        <!-- start row -->
+                        <div class="row">
+                            <div class="col-md-12">
+        
+
+                            <div class="col-md-6">
+                                <div class="row g-3">
+                                    
+                                    <div class="col-md-6">
+                                        <div class="card mb-0">
+                                            <div class="card-body">
+                                                <div class="widget-first">
+        
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <div class="p-2 border border-primary border-opacity-10 bg-primary-subtle rounded-pill me-2">
+                                                            <div class="bg-primary rounded-circle widget-size text-center">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#ffffff" d="M12 4a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4m0 10c4.42 0 8 1.79 8 4v2H4v-2c0-2.21 3.58-4 8-4"/></svg>
+                                                            </div>
+                                                        </div>
+                                                        <p class="mb-0 text-dark fs-15">Girilen Sipariş</p>
+                                                    </div>
        
                                                     <div class="d-flex justify-content-between align-items-center">
                                                         <h3 class="mb-0 fs-22 text-black me-3"><?php echo getAllUnprocessedOrderCount($db); ?></h3>
