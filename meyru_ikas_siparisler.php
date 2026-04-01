@@ -51,7 +51,7 @@ curl_setopt_array($ch, [
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => json_encode([
         'query'     => $query,
-        'variables' => ['pagination' => ['page' => $page, 'limit' => $limit]],
+        'variables' => ['pagination' => ['page' => $page, 'limit' => $limit, 'sort' => ['field' => 'createdAt', 'order' => 'DESC']]],
     ]),
     CURLOPT_HTTPHEADER => [
         'Authorization: Bearer ' . $access_token,
