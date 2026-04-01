@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 require_once 'DB.php';
 $db = new DB();
 
-// --- Ara tablo yoksa oluÅŸtur ---
+// --- Ara tablo yoksa oluştur ---
 $db->query("CREATE TABLE IF NOT EXISTS ikas_bekleyen (
     id          INT AUTO_INCREMENT PRIMARY KEY,
     siparis_no  VARCHAR(50) NOT NULL UNIQUE,
@@ -25,7 +25,7 @@ $db->query("CREATE TABLE IF NOT EXISTS ikas_bekleyen (
     ekleme_tarihi DATETIME DEFAULT CURRENT_TIMESTAMP
 )");
 
-// --- ikas_son'dan siparis_no > 2400 ve ikas_bekleyen'e eklenmemiÅŸ olanlarÄ± al ---
+// --- ikas_son'dan siparis_no > 2400 ve ikas_bekleyen'e eklenmemiş olanları al ---
 $bekleyenler = $db->query(
     "SELECT * FROM ikas_son
      WHERE CAST(siparis_no AS UNSIGNED) > 2400
@@ -62,7 +62,7 @@ while ($row = $bekleyenler->fetch_assoc()) {
     }
 }
 
-// --- TÃ¼m ikas_bekleyen kayÄ±tlarÄ±nÄ± listele (yeniden sorgula) ---
+// --- Tüm ikas_bekleyen kayıtlarını listele (yeniden sorgula) ---�m ikas_bekleyen kayitlarini listele (yeniden sorgula) ---
 $tumListele = $db->query(
     "SELECT * FROM ikas_bekleyen ORDER BY CAST(siparis_no AS UNSIGNED) DESC"
 );
@@ -72,7 +72,7 @@ $toplamSayim = $db->query("SELECT COUNT(*) AS c FROM ikas_bekleyen")->fetch_asso
 <html lang="tr">
 <head>
     <meta charset="utf-8" />
-    <title>SatÄ±ÅŸ Panel | iKas Bekleyen (2400+)</title>
+    <title>Satış Panel | iKas Bekleyen (2400+)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -104,20 +104,25 @@ $toplamSayim = $db->query("SELECT COUNT(*) AS c FROM ikas_bekleyen")->fetch_asso
                 <div class="py-3 d-flex align-items-center">
                     <h4 class="fs-18 m-0 cs-page-title">
                         <span class="cs-page-title-bar"></span>
-                        iKas Bekleyen SipariÅŸler â€” No &gt; 2400
+                        iKas Bekleyen Siparişler — No &gt; 2400
                     </h4>
                 </div>
 
                 <div class="alert-cs mb-3">
                     <?php if ($eklenenler > 0): ?>
-                        <strong class="text-success">âœ“ <?= $eklenenler ?> yeni sipariÅŸ <code>ikas_bekleyen</code> tablosuna eklendi.</strong>
+                        <strong class="text-success">✓ <?= $eklenenler ?> yeni sipariş <code>ikas_bekleyen</code> tablosuna eklendi.</strong>
                     <?php else: ?>
-                        <strong>Yeni eklenecek sipariÅŸ bulunamadÄ±.</strong> (TÃ¼m 2400+ sipariÅŸler zaten kayÄ±tlÄ±.)
+                        <strong>Yeni eklenecek sipariş bulunamadı.</strong> (Tüm 2400+ siparişler zaten kayıtlı.)
                     <?php endif; ?>
                     <?php if ($hata_sayisi > 0): ?>
-                        <br><span class="text-danger"><?= $hata_sayisi ?> sipariÅŸ eklenirken hata oluÅŸtu.</span>
+                        <br><span class="text-danger"><?= $hata_sayisi ?> sipariş eklenirken hata oluştu.</span>
                     <?php endif; ?>
-                    <span class="ms-3 text-muted" style="font-size:.82rem;">Toplam <strong><?= $toplamSayim ?></strong> kayÄ±t</span>
+                    <span class="ms-3 text-muted" style="font-size:.82rem;">Toplam <strong><?= $toplamSayim ?></strong> kayıt</span>�m 2400+ siparisler zaten kayitli.)
+                    <?php endif; ?>
+                    <?php if ($hata_sayisi > 0): ?>
+                        <br><span class="text-danger"><?= $hata_sayisi ?> siparis eklenirken hata olustu.</span>
+                    <?php endif; ?>
+                    <span class="ms-3 text-muted" style="font-size:.82rem;">Toplam <strong><?= $toplamSayim ?></strong> kayıt</span>
                 </div>
 
                 <div class="card">
@@ -126,21 +131,28 @@ $toplamSayim = $db->query("SELECT COUNT(*) AS c FROM ikas_bekleyen")->fetch_asso
                     </div>
                     <div class="card-body p-0">
                         <?php if ($toplamSayim == 0): ?>
-                            <p class="text-center text-muted py-4">KayÄ±t bulunamadÄ±.</p>
+                            <p class="text-center text-muted py-4">Kayıt bulunamadı.</p>
                         <?php else: ?>
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered text-center align-middle mb-0">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>SipariÅŸ No</th>
-                                        <th>MÃ¼ÅŸteri</th>
+                                        <th>Sipariş No</th>
+                                        <th>Müşteri</th>
                                         <th>Telefon</th>
-                                        <th>Ä°l / Ä°lÃ§e</th>
-                                        <th>ÃœrÃ¼nler</th>
+                                        <th>İl / İlçe</th>
+                                        <th>Ürünler</th>
                                         <th>Tutar</th>
                                         <th>Kargo</th>
-                                        <th>SipariÅŸ Tarihi</th>
+                                        <th>Sipariş Tarihi</th>
+                                        <th>Eklenme</th>�steri</th>
+                                        <th>Telefon</th>
+                                        <th>Il / Il�e</th>
+                                        <th>�r�nler</th>
+                                        <th>Tutar</th>
+                                        <th>Kargo</th>
+                                        <th>Siparis Tarihi</th>
                                         <th>Eklenme</th>
                                     </tr>
                                 </thead>

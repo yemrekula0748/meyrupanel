@@ -8,9 +8,23 @@ if (!isset($_SESSION['user_id'])) {
 require_once 'DB.php';
 $db = new DB();
 
-// Token'ı veritabanından al
-$tokenRow = $db->query("SELECT token FROM ikas WHERE id = 2")->fetch_assoc();
-$access_token = $tokenRow['token'] ?? '';
+// Token — doğrudan MeyruKids client credentials ile çek (DB bağımlılığı yok)
+$_meyru_ch = curl_init();
+curl_setopt_array($_meyru_ch, [
+    CURLOPT_URL            => 'https://meyrukids.myikas.com/api/admin/oauth/token',
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST           => true,
+    CURLOPT_POSTFIELDS     => http_build_query([
+        'grant_type'    => 'client_credentials',
+        'client_id'     => 'd77fdc51-f738-483f-9489-a0d62c7623a1',
+        'client_secret' => 's_HY2KNGjr3PpOB10esPQb1onT1a84e2da75d4405bb53e0e5d88e7d526',
+    ]),
+    CURLOPT_HTTPHEADER => ['Content-Type: application/x-www-form-urlencoded'],
+]);
+$_meyru_resp       = curl_exec($_meyru_ch);
+curl_close($_meyru_ch);
+$_meyru_token_data = json_decode($_meyru_resp, true);
+$access_token      = $_meyru_token_data['access_token'] ?? '';
 
 // Filtreler
 $page  = max(1, (int)($_GET['page'] ?? 1));
