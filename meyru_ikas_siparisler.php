@@ -9,7 +9,7 @@ require_once 'DB.php';
 $db = new DB();
 
 // Token'ı veritabanından al
-$tokenRow = $db->query("SELECT token FROM ikas WHERE id = 1")->fetch_assoc();
+$tokenRow = $db->query("SELECT token FROM ikas WHERE id = 2")->fetch_assoc();
 $access_token = $tokenRow['token'] ?? '';
 
 // Filtreler

@@ -36,7 +36,7 @@ if (isset($result['access_token'])) {
 
     $db = new DB();
     $escaped = $db->escape($access_token);
-    $db->query("UPDATE ikas SET token = '$escaped' WHERE id = 1");
+    $db->query("UPDATE ikas SET token = '$escaped' WHERE id = 2");
 
     echo "Token başarıyla kaydedildi.";
 } else {
