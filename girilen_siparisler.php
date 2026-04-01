@@ -47,11 +47,129 @@ if (!isset($_SESSION['user_id'])) {
 
 
 	<script src="font.js"></script>
-	
 
+    <!-- Inter Font + Crimson Theme -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* === Crimson modernizasyon - login.php uyumlu === */
+        body {
+            background-color: #f5f5f5 !important;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c41a1a' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") !important;
+        }
+        body, .content-page, .content, .container-fluid {
+            font-family: 'Inter', ui-sans-serif, system-ui, sans-serif !important;
+        }
+        .card {
+            border-radius: 1rem !important;
+            border: none !important;
+            box-shadow: 0 4px 6px -1px rgba(196,26,26,0.08), 0 10px 30px -5px rgba(196,26,26,0.10) !important;
+        }
+        .cs-stat-card { border-top: 3px solid #c41a1a !important; }
+        .cs-stat-label {
+            font-size: 0.78rem; font-weight: 600; color: #6b7280;
+            text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .cs-stat-value { font-size: 1.8rem; font-weight: 800; color: #c41a1a; }
+        .btn-cs-primary {
+            background: linear-gradient(135deg, #c41a1a 0%, #8b0f0f 100%) !important;
+            border: none !important; border-radius: 0.65rem !important;
+            color: #fff !important; font-family: 'Inter', sans-serif !important;
+            font-weight: 600 !important; font-size: 0.85rem !important;
+            padding: 8px 18px !important;
+            box-shadow: 0 2px 8px rgba(196,26,26,0.25) !important;
+            transition: opacity 0.15s !important;
+        }
+        .btn-cs-primary:hover { opacity: 0.88 !important; color: #fff !important; }
+        .btn-cs-outline {
+            background: #fff !important; border: 1.5px solid #c41a1a !important;
+            border-radius: 0.65rem !important; color: #c41a1a !important;
+            font-family: 'Inter', sans-serif !important; font-weight: 600 !important;
+            font-size: 0.85rem !important; padding: 8px 18px !important;
+            transition: all 0.15s !important;
+        }
+        .btn-cs-outline:hover { background: #c41a1a !important; color: #fff !important; }
+        .btn-cs-green {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+            border: none !important; border-radius: 0.65rem !important;
+            color: #fff !important; font-family: 'Inter', sans-serif !important;
+            font-weight: 600 !important; font-size: 0.85rem !important;
+            padding: 8px 18px !important;
+            box-shadow: 0 2px 8px rgba(22,163,74,0.20) !important;
+            transition: opacity 0.15s !important;
+        }
+        .btn-cs-green:hover { opacity: 0.88 !important; color: #fff !important; }
+        .table thead th {
+            background: linear-gradient(135deg, #c41a1a 0%, #8b0f0f 100%) !important;
+            color: #fff !important; font-family: 'Inter', sans-serif !important;
+            font-weight: 600 !important; font-size: 0.75rem !important;
+            text-transform: uppercase !important; letter-spacing: 0.05em !important;
+            white-space: nowrap !important; border: none !important;
+            padding: 12px 10px !important;
+        }
+        .table tbody td {
+            font-family: 'Inter', sans-serif !important;
+            font-size: 0.84rem !important; vertical-align: middle !important;
+            color: #374151 !important; border-color: #f3f4f6 !important;
+        }
+        .table tbody tr:hover td { background-color: #fff5f5 !important; }
+        .card-header {
+            background: linear-gradient(135deg, #c41a1a 0%, #8b0f0f 100%) !important;
+            border-radius: 1rem 1rem 0 0 !important;
+            padding: 14px 20px !important; border: none !important;
+        }
+        .card-header .card-title {
+            color: #fff !important; font-family: 'Inter', sans-serif !important;
+            font-weight: 700 !important; font-size: 1rem !important; margin: 0 !important;
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #c41a1a 0%, #8b0f0f 100%) !important;
+            border-radius: calc(0.5rem - 1px) calc(0.5rem - 1px) 0 0 !important;
+        }
+        .modal-header .modal-title,
+        .modal-header h5, .modal-header h6 {
+            color: #fff !important; font-family: 'Inter', sans-serif !important; font-weight: 700 !important;
+        }
+        .modal-header .btn-close { filter: invert(1) !important; }
+        .modal-content {
+            border-radius: 0.75rem !important; border: none !important;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15) !important;
+        }
+        .cs-page-title {
+            display: inline-flex; align-items: center; gap: 10px;
+            font-family: 'Inter', sans-serif !important; font-weight: 700 !important; color: #c41a1a !important;
+        }
+        .cs-page-title-bar {
+            width: 4px; height: 28px;
+            background: linear-gradient(135deg, #c41a1a, #8b0f0f);
+            border-radius: 4px; display: inline-block;
+        }
+        #sonuc:not(:empty) {
+            margin: 0 20px 12px; padding: 12px 16px;
+            background: #fff5f5; border-left: 4px solid #c41a1a;
+            border-radius: 0.5rem; font-family: 'Inter', sans-serif; font-size: 0.9rem;
+        }
+        .badge { font-family: 'Inter', sans-serif !important; font-weight: 600 !important; border-radius: 9999px !important; }
+        .form-control, .form-select {
+            font-family: 'Inter', sans-serif !important;
+            border-radius: 0.5rem !important; font-size: 0.85rem !important;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #c41a1a !important;
+            box-shadow: 0 0 0 3px rgba(196,26,26,0.12) !important;
+        }
+        .form-label { font-family: 'Inter', sans-serif !important; font-weight: 500 !important; font-size: 0.85rem !important; }
+        .modal-footer .btn-primary, .modal-footer .btn-warning, .modal-footer .btn-info {
+            background: linear-gradient(135deg, #c41a1a 0%, #8b0f0f 100%) !important;
+            border: none !important; border-radius: 0.5rem !important;
+            font-family: 'Inter', sans-serif !important; font-weight: 600 !important;
+            color: #fff !important;
+        }
+        .modal-footer .btn-secondary, .modal-footer .btn-dark {
+            border-radius: 0.5rem !important;
+            font-family: 'Inter', sans-serif !important; font-weight: 600 !important;
+        }
+    </style>
 
-
-    
     </head>
 
     <body data-menu-color="light" data-sidebar="default">
@@ -63,7 +181,10 @@ if (!isset($_SESSION['user_id'])) {
                     <div class="container-fluid">
                         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                             <div class="flex-grow-1">
-                                <h4 class="fs-18 fw-semibold m-0">Girilen Siparişler</h4>
+                                <h4 class="fs-18 m-0 cs-page-title">
+                                    <span class="cs-page-title-bar"></span>
+                                    Girilen Siparişler
+                                </h4>
                             </div>
                         </div>
                     
@@ -90,30 +211,28 @@ if ($sorgu2 && $row2 = $sorgu2->fetch_assoc()) {
     $sayi2 = $row2['toplam'];
 }
 ?>
-<div class="row mb-2">
+<div class="row mb-3 g-2">
     <div class="col-auto">
-        <div class="card border-success shadow-sm" style="min-width:180px; max-width:220px;">
-            <div class="card-body py-2 px-3 text-center">
-                <div class="small text-muted mb-1" style="font-size: 0.95rem;">Web Sitesine Bugün Gelen İkas Sipariş Sayısı</div>
-                <span class="fw-semibold text-success" style="font-size: 1.5rem;"><?= $sayi ?></span>
+        <div class="card cs-stat-card" style="min-width:210px;">
+            <div class="card-body py-3 px-4 text-center">
+                <div class="cs-stat-label mb-1">Bugün Gelen İkas Sipariş</div>
+                <div class="cs-stat-value"><?= $sayi ?></div>
             </div>
         </div>
     </div>
     <div class="col-auto">
-        <div class="card border-primary shadow-sm" style="min-width:180px; max-width:220px;">
-            <div class="card-body py-2 px-3 text-center">
-                <div class="small text-muted mb-1" style="font-size: 0.95rem;">Panele Çekilen iKas Sipariş Sayısı</div>
-                <span class="fw-semibold text-warning" style="font-size: 1.5rem;"><?= $sayi2 ?></span>
+        <div class="card cs-stat-card" style="min-width:210px;">
+            <div class="card-body py-3 px-4 text-center">
+                <div class="cs-stat-label mb-1">Panele Çekilen İkas Sipariş</div>
+                <div class="cs-stat-value"><?= $sayi2 ?></div>
             </div>
         </div>
     </div>
 </div>       
 
                         <!-- Butonlar -->
-                        <div class="d-flex justify-content-start align-items-center mb-3">
-                            <!-- Sol tarafta tüm butonlar -->
-                            
-    <button class="btn btn-success me-2" id="ikasAktarBtn">
+                        <div class="d-flex justify-content-start align-items-center mb-3" style="gap:8px;flex-wrap:wrap;">
+    <button class="btn btn-cs-green" id="ikasAktarBtn">
         iKas Siparişlerini Aktar
     </button>
                <script>
@@ -152,13 +271,9 @@ document.getElementById('ikasAktarBtn').addEventListener('click', function() {
 });
 </script>             
 
-							<button class="btn btn-warning me-2" onclick="window.location.href='export_excel.php'">Excel İndir</button>
-                            
-                            <button class="btn btn-warning" id="guncelleBtn">Siparişleri Resmileştir</button>
-
-
-
-                            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#siparisGirModal">
+	                            <button class="btn btn-cs-outline" onclick="window.location.href='export_excel.php'">Excel İndir</button>
+                            <button class="btn btn-cs-outline" id="guncelleBtn">Siparişleri Resmileştir</button>
+                            <button type="button" class="btn btn-cs-primary" data-bs-toggle="modal" data-bs-target="#siparisGirModal">
                                 Sipariş Gir
                             </button>
 
