@@ -187,7 +187,7 @@ $counter = 1; // Sayaç başlangıç değeri ?>
                                             <th>MÜŞTERİ</th>
                                             <th>KARGO DAHIL</th>
                                             <th>EKLEME TARİHİ</th>
-                                            <th>RESMİ FATURA</th>
+
                                             <th>BARKOD</th>
                                             <th>TUTAR</th>
                                             <th>İŞLEM</th>
@@ -221,8 +221,7 @@ $counter = 1; // Sayaç başlangıç değeri ?>
                                                 default => ''
                                             };
 
-                                            // Resmileşme durumu
-                                            $resmilesmeDurumu = $row['faturalandirma_durumu'] === "Faturalandırılmadı" ? '✖︎' : '✓';
+
 
                                             // Barkod durumu
                                             $barkodDurumu = $row['barkod_basilma_durumu'] === "Basılmamış" ? '✖︎' : '✓';
@@ -281,7 +280,7 @@ $counter = 1; // Sayaç başlangıç değeri ?>
                                                 <td><?= $musteriBilgileri ?></td>
                                                 <td><?= htmlspecialchars($kargoDurumu) ?></td>
                                                <td><?= date('d-m-Y H:i', strtotime($row['siparis_tarihi'])) ?></td>
-                                                <td><?= htmlspecialchars($resmilesmeDurumu) ?></td>
+
                                                 <td><?= htmlspecialchars($barkodDurumu) ?></td>
                                                 <td><?= htmlspecialchars($odemeSarti) ?></td>
                                                 <td class="text-center">

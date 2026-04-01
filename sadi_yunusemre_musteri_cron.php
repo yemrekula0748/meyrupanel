@@ -9,7 +9,7 @@ $tokenResult = $db->fetchAssoc($tokenQuery);
 $access_token = $tokenResult['parasut_token_yunusemre'];
 
 // Sipariş verilerini almak
-$siparisQuery = $db->query("SELECT * FROM siparisler WHERE (hangikargo = 'Yunus Emre - PTT' OR hangikargo = 'Yunus Emre - Hepsijet') AND kargo = 'Ödeme Şartlı' AND parasut_id = 0 LIMIT 5");
+$siparisQuery = $db->query("SELECT * FROM siparisler WHERE (hangikargo = 'MeyruKids' OR hangikargo = 'Yunus Emre - Hepsijet') AND kargo = 'Ödeme Şartlı' AND parasut_id = 0 LIMIT 5");
 $siparisler = [];
 while ($row = $db->fetchAssoc($siparisQuery)) {
     $siparisler[] = $row;
@@ -34,7 +34,7 @@ foreach ($siparisler as $siparis) {
     ];
 
     $options = [
-        CURLOPT_URL => 'https://api.parasut.com/v4/50038/contacts',
+        CURLOPT_URL => 'https://api.parasut.com/v4/624505/contacts',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => [
             'Content-Type: application/json',
