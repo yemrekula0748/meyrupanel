@@ -172,7 +172,7 @@ $paymentLabels = [
                                     $il        = $order['billingAddress']['city']['name'] ?? '-';
                                     $ilce      = $order['billingAddress']['district']['name'] ?? '-';
                                     $tutar     = number_format($order['totalFinalPrice'] ?? 0, 2, ',', '.') . ' ₺';
-                                    $tarih     = isset($order['createdAt']) ? date('d-m-Y H:i', $order['createdAt'] / 1000) : '-';
+                                    $tarih     = isset($order['createdAt']) ? date('d-m-Y H:i', (int)($order['createdAt'] / 1000)) : '-';
                                     $status    = $order['orderPaymentStatus'] ?? '';
                                     [$statusLabel, $statusColor] = $paymentLabels[$status] ?? [$status, 'secondary'];
 
