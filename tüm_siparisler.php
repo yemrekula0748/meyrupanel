@@ -237,9 +237,9 @@ if ($barkod === null || $barkod === '' ) {
 		
     <?php endif; ?>
 	
-	<?php if ($row['kargo'] === 'Ödeme Şartlı' && $row['resmilestir'] == 0): ?>
-    <button class="btn btn-warning rounded-pill w-100" 
-            onclick="window.open('tekli_resmilestir.php?id=<?= $row['id']; ?>', '_blank')">
+	<?php if ($row['kargo'] === 'Ödeme Şartlı' && $row['resmilestir'] == 0 && $row['yunusemrekula'] == 0): ?>
+    <button class="btn btn-warning rounded-pill w-100"
+            onclick="resmilestirYunus(<?= $row['id']; ?>, this)">
         Resmileştir
     </button>
 <?php endif; ?>
@@ -336,6 +336,34 @@ if ($barkod === null || $barkod === '' ) {
             font-size: 0.75rem;
         }
         </style>
+
+<script>
+function resmilestirYunus(id, btn) {
+    if (!confirm(id + ' numaralı siparişi resmileştirme kuyruğuna almak istiyor musunuz?')) return;
+    btn.disabled = true;
+    btn.textContent = 'Bekleyin...';
+    fetch('resmilestir_yunusemre_islem.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'action=update_single&id=' + id
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.status === 'success') {
+            btn.textContent = '✓ Kuyruğa Alındı';
+            btn.classList.remove('btn-warning');
+            btn.classList.add('btn-success');
+        } else {
+            btn.textContent = 'Hata';
+            btn.disabled = false;
+        }
+    })
+    .catch(() => {
+        btn.textContent = 'Hata';
+        btn.disabled = false;
+    });
+}
+</script>
 
 </body>
 </html>

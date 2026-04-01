@@ -18,6 +18,15 @@ if ($action === 'count') {
     $db->query("UPDATE siparisler SET yunusemrekula = 1 WHERE $where");
     echo json_encode(['status' => 'success']);
 
+} elseif ($action === 'update_single') {
+    $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+    if ($id > 0) {
+        $db->query("UPDATE siparisler SET yunusemrekula = 1 WHERE id = $id");
+        echo json_encode(['status' => 'success']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Geçersiz ID']);
+    }
+
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Geçersiz istek']);
 }
