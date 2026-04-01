@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
@@ -9,70 +8,50 @@ if (!isset($_SESSION['user_id'])) {
 require_once 'DB.php';
 $db = new DB();
 
-// --- Ara tablo yoksa oluştur ---
-$db->query("CREATE TABLE IF NOT EXISTS ikas_bekleyen (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    siparis_no  VARCHAR(50) NOT NULL UNIQUE,
-    musteri_ismi VARCHAR(255),
-    adres       TEXT,
-    tarih       DATETIME,
-    sehir       VARCHAR(100),
-    ilce        VARCHAR(100),
-    urunler     TEXT,
-    telefon     VARCHAR(50),
-    kargo       VARCHAR(100),
-    toplam_fiyat VARCHAR(50),
-    ekleme_tarihi DATETIME DEFAULT CURRENT_TIMESTAMP
-)");
+// meyru_ikas_son tablosu yoksa bildir
+$tableExists = $db->query("SHOW TABLES LIKE 'meyru_ikas_son'")->num_rows > 0;
 
-// --- ikas_son'dan siparis_no > 2400 ve ikas_bekleyen'e eklenmemiş olanları al ---
-$bekleyenler = $db->query(
-    "SELECT * FROM ikas_son
-     WHERE CAST(siparis_no AS UNSIGNED) > 2400
-       AND siparis_no NOT IN (SELECT siparis_no FROM ikas_bekleyen)
-     ORDER BY CAST(siparis_no AS UNSIGNED) DESC"
-);
+$page  = max(1, (int)($_GET['page'] ?? 1));
+$limit = 50;
+$fromDate = $_GET['from'] ?? date('Y-m-d', strtotime('-90 days'));
+$toDate   = $_GET['to']   ?? date('Y-m-d');
 
-$eklenenler  = 0;
-$hata_sayisi = 0;
+$totalCount = 0;
+$orders     = [];
 
-while ($row = $bekleyenler->fetch_assoc()) {
-    $ekle = $db->query(
-        "INSERT IGNORE INTO ikas_bekleyen
-         (siparis_no, musteri_ismi, adres, tarih, sehir, ilce, urunler, telefon, kargo, toplam_fiyat)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [
-            $row['siparis_no'],
-            $row['musteri_ismi'],
-            $row['adres'],
-            $row['tarih'],
-            $row['sehir'],
-            $row['ilce'],
-            $row['urunler'],
-            $row['telefon'],
-            $row['kargo'],
-            $row['toplam_fiyat'],
-        ],
-        "ssssssssss"
+if ($tableExists) {
+    $countRow = $db->query(
+        "SELECT COUNT(*) AS c FROM meyru_ikas_son WHERE DATE(tarih) BETWEEN ? AND ?",
+        [$fromDate, $toDate], "ss"
+    )->fetch_assoc();
+    $totalCount = (int)($countRow['c'] ?? 0);
+
+    $offset = ($page - 1) * $limit;
+    $result = $db->query(
+        "SELECT * FROM meyru_ikas_son WHERE DATE(tarih) BETWEEN ? AND ?
+         ORDER BY tarih DESC LIMIT ? OFFSET ?",
+        [$fromDate, $toDate, $limit, $offset], "ssii"
     );
-    if ($ekle) {
-        $eklenenler++;
-    } else {
-        $hata_sayisi++;
+    while ($row = $result->fetch_assoc()) {
+        $orders[] = $row;
     }
 }
 
-// --- Tüm ikas_bekleyen kayıtlarını listele (yeniden sorgula) ---�m ikas_bekleyen kayitlarini listele (yeniden sorgula) ---
-$tumListele = $db->query(
-    "SELECT * FROM ikas_bekleyen ORDER BY CAST(siparis_no AS UNSIGNED) DESC"
-);
-$toplamSayim = $db->query("SELECT COUNT(*) AS c FROM ikas_bekleyen")->fetch_assoc()['c'] ?? 0;
+$totalPages = $totalCount > 0 ? (int)ceil($totalCount / $limit) : 1;
+$qs = http_build_query(['from' => $fromDate, 'to' => $toDate]);
+
+$paymentLabels = [
+    'WAITING'   => ['Bekliyor',   'warning'],
+    'PAID'      => ['Odendi',     'success'],
+    'REFUNDED'  => ['Iade',       'danger'],
+    'CANCELLED' => ['Iptal',      'secondary'],
+];
 ?>
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="utf-8" />
-    <title>Satış Panel | iKas Bekleyen (2400+)</title>
+    <title>Satis Panel | MeyruKids iKas Siparisler</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -89,9 +68,12 @@ $toplamSayim = $db->query("SELECT COUNT(*) AS c FROM ikas_bekleyen")->fetch_asso
         .table tbody tr:hover td { background-color: #fff5f5 !important; }
         .cs-page-title { display: inline-flex; align-items: center; gap: 10px; font-weight: 700 !important; color: #c41a1a !important; }
         .cs-page-title-bar { width: 4px; height: 28px; background: linear-gradient(135deg, #c41a1a, #8b0f0f); border-radius: 4px; display: inline-block; }
-        .alert-cs { padding: 12px 16px; border-left: 4px solid #c41a1a; background: #fff5f5; border-radius: .5rem; font-size: .9rem; }
         .badge { font-weight: 600 !important; border-radius: 9999px !important; }
-        .tr-new td { background-color: #f0fff4 !important; }
+        .btn-cs-outline { background: #fff !important; border: 1.5px solid #c41a1a !important; border-radius: .65rem !important; color: #c41a1a !important; font-weight: 600 !important; font-size: .85rem !important; padding: 8px 18px !important; }
+        .btn-cs-outline:hover { background: #c41a1a !important; color: #fff !important; }
+        .btn-cs-green { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important; border: none !important; border-radius: .65rem !important; color: #fff !important; font-weight: 600 !important; font-size: .85rem !important; padding: 8px 18px !important; }
+        .pagination .page-link { color: #c41a1a; border-radius: .5rem !important; margin: 0 2px; }
+        .pagination .page-item.active .page-link { background: #c41a1a; border-color: #c41a1a; color: #fff; }
     </style>
 </head>
 <body data-menu-color="light" data-sidebar="default">
@@ -101,78 +83,101 @@ $toplamSayim = $db->query("SELECT COUNT(*) AS c FROM ikas_bekleyen")->fetch_asso
         <div class="content">
             <div class="container-fluid">
 
-                <div class="py-3 d-flex align-items-center">
+                <div class="py-3 d-flex align-items-center justify-content-between flex-wrap" style="gap:10px;">
                     <h4 class="fs-18 m-0 cs-page-title">
                         <span class="cs-page-title-bar"></span>
-                        iKas Bekleyen Siparişler — No &gt; 2400
+                        MeyruKids iKas Siparisler
                     </h4>
+                    <button class="btn btn-cs-green" id="veriCekBtn">
+                        <span class="mdi mdi-refresh me-1"></span> Verileri Guncelle
+                    </button>
                 </div>
 
-                <div class="alert-cs mb-3">
-                    <?php if ($eklenenler > 0): ?>
-                        <strong class="text-success">✓ <?= $eklenenler ?> yeni sipariş <code>ikas_bekleyen</code> tablosuna eklendi.</strong>
-                    <?php else: ?>
-                        <strong>Yeni eklenecek sipariş bulunamadı.</strong> (Tüm 2400+ siparişler zaten kayıtlı.)
-                    <?php endif; ?>
-                    <?php if ($hata_sayisi > 0): ?>
-                        <br><span class="text-danger"><?= $hata_sayisi ?> sipariş eklenirken hata oluştu.</span>
-                    <?php endif; ?>
-                    <span class="ms-3 text-muted" style="font-size:.82rem;">Toplam <strong><?= $toplamSayim ?></strong> kayıt</span>
-                </div>
+                <div id="veriCekSonuc" class="mb-3" style="display:none;"></div>
+
+                <?php if (!$tableExists): ?>
+                    <div class="alert alert-warning">
+                        <strong>meyru_ikas_son</strong> tablosu henuz olusturulmamis.
+                        "Verileri Guncelle" butonuna basin.
+                    </div>
+                <?php endif; ?>
+
+                <!-- Tarih Filtresi -->
+                <form method="get" class="card mb-3">
+                    <div class="card-body py-2 px-3">
+                        <div class="d-flex align-items-center gap-3 flex-wrap">
+                            <div class="d-flex align-items-center gap-2">
+                                <label class="form-label mb-0 fw-semibold" style="font-size:.85rem;white-space:nowrap;">Baslangic:</label>
+                                <input type="date" name="from" class="form-control form-control-sm" value="<?= htmlspecialchars($fromDate) ?>" style="width:145px;">
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <label class="form-label mb-0 fw-semibold" style="font-size:.85rem;white-space:nowrap;">Bitis:</label>
+                                <input type="date" name="to" class="form-control form-control-sm" value="<?= htmlspecialchars($toDate) ?>" style="width:145px;">
+                            </div>
+                            <input type="hidden" name="page" value="1">
+                            <button type="submit" class="btn btn-cs-outline btn-sm">Filtrele</button>
+                            <a href="?" class="btn btn-cs-outline btn-sm">Sifirla</a>
+                        </div>
+                    </div>
+                </form>
 
                 <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">ikas_bekleyen Tablosu</h5>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            Siparis Listesi &mdash; Sayfa <?= $page ?> / <?= $totalPages ?>
+                            <small class="fw-normal ms-2">(toplam <?= $totalCount ?> siparis)</small>
+                        </h5>
+                        <div class="d-flex gap-2">
+                            <?php if ($page > 1): ?>
+                                <a href="?page=<?= $page - 1 ?>&<?= $qs ?>" class="btn btn-cs-outline btn-sm">&#8249; Onceki</a>
+                            <?php endif; ?>
+                            <?php if ($page < $totalPages): ?>
+                                <a href="?page=<?= $page + 1 ?>&<?= $qs ?>" class="btn btn-cs-outline btn-sm">Sonraki &#8250;</a>
+                            <?php endif; ?>
+                        </div>
                     </div>
                     <div class="card-body p-0">
-                        <?php if ($toplamSayim == 0): ?>
-                            <p class="text-center text-muted py-4">Kayıt bulunamadı.</p>
+                        <?php if (empty($orders)): ?>
+                            <p class="text-center text-muted py-4">Kayit bulunamadi.</p>
                         <?php else: ?>
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered text-center align-middle mb-0">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Sipariş No</th>
-                                        <th>Müşteri</th>
+                                        <th>Siparis No</th>
+                                        <th>Musteri</th>
                                         <th>Telefon</th>
-                                        <th>İl / İlçe</th>
-                                        <th>Ürünler</th>
+                                        <th>Il / Ilce</th>
+                                        <th>Urunler</th>
                                         <th>Tutar</th>
-                                        <th>Kargo</th>
-                                        <th>Sipariş Tarihi</th>
-                                        <th>Eklenme</th>�steri</th>
-                                        <th>Telefon</th>
-                                        <th>Il / Il�e</th>
-                                        <th>�r�nler</th>
-                                        <th>Tutar</th>
-                                        <th>Kargo</th>
-                                        <th>Siparis Tarihi</th>
-                                        <th>Eklenme</th>
+                                        <th>Odeme Yontemi</th>
+                                        <th>Odeme Durumu</th>
+                                        <th>Tarih</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 <?php
-                                $sayac = 1;
-                                while ($r = $tumListele->fetch_assoc()):
-                                    $isYeni = ($eklenenler > 0 && strtotime($r['ekleme_tarihi']) >= strtotime('-10 seconds'));
+                                $counter = ($page - 1) * $limit + 1;
+                                foreach ($orders as $r):
+                                    $tutar = number_format($r['toplam_fiyat'] ?? 0, 2, ',', '.') . ' TL';
+                                    $tarih = !empty($r['tarih']) ? date('d-m-Y H:i', strtotime($r['tarih'])) : '-';
+                                    $status = $r['odeme_durumu'] ?? '';
+                                    [$statusLabel, $statusColor] = $paymentLabels[$status] ?? [$status, 'secondary'];
                                 ?>
-                                    <tr<?= $isYeni ? ' class="tr-new"' : '' ?>>
-                                        <td><?= $sayac++ ?></td>
-                                        <td>
-                                            <strong><?= htmlspecialchars($r['siparis_no']) ?></strong>
-                                            <?php if ($isYeni): ?><span class="badge bg-success ms-1">Yeni</span><?php endif; ?>
-                                        </td>
+                                    <tr>
+                                        <td><?= $counter++ ?></td>
+                                        <td><strong><?= htmlspecialchars($r['siparis_no'] ?? '') ?></strong></td>
                                         <td><?= htmlspecialchars($r['musteri_ismi'] ?? '') ?></td>
                                         <td><?= htmlspecialchars($r['telefon'] ?? '') ?></td>
                                         <td><?= htmlspecialchars(($r['sehir'] ?? '-') . ' / ' . ($r['ilce'] ?? '-')) ?></td>
                                         <td class="text-start" style="font-size:.78rem;"><?= nl2br(htmlspecialchars($r['urunler'] ?? '')) ?></td>
-                                        <td><strong><?= htmlspecialchars($r['toplam_fiyat'] ?? '-') ?> TL</strong></td>
-                                        <td><?= htmlspecialchars($r['kargo'] ?? '-') ?></td>
-                                        <td><?= !empty($r['tarih']) ? date('d-m-Y H:i', strtotime($r['tarih'])) : '-' ?></td>
-                                        <td style="font-size:.75rem;color:#6b7280;"><?= !empty($r['ekleme_tarihi']) ? date('d-m-Y H:i', strtotime($r['ekleme_tarihi'])) : '-' ?></td>
+                                        <td><strong><?= $tutar ?></strong></td>
+                                        <td><span class="badge bg-info text-dark"><?= htmlspecialchars($r['odeme_yontemi'] ?? '-') ?></span></td>
+                                        <td><span class="badge bg-<?= $statusColor ?>"><?= htmlspecialchars($statusLabel) ?></span></td>
+                                        <td><?= $tarih ?></td>
                                     </tr>
-                                <?php endwhile; ?>
+                                <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -180,13 +185,60 @@ $toplamSayim = $db->query("SELECT COUNT(*) AS c FROM ikas_bekleyen")->fetch_asso
                     </div>
                 </div>
 
+                <div class="d-flex justify-content-center mt-3 gap-2">
+                    <?php if ($page > 1): ?>
+                        <a href="?page=<?= $page - 1 ?>&<?= $qs ?>" class="btn btn-cs-outline">&#8249; Onceki</a>
+                    <?php endif; ?>
+                    <?php if ($page < $totalPages): ?>
+                        <a href="?page=<?= $page + 1 ?>&<?= $qs ?>" class="btn btn-cs-outline">Sonraki &#8250;</a>
+                    <?php endif; ?>
+                </div>
+
             </div>
         </div>
         <?php include 'tema/footer.php'; ?>
     </div>
 </div>
+
 <script src="assets/libs/jquery/jquery.min.js"></script>
 <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="assets/js/app.js"></script>
+<script>
+document.getElementById('veriCekBtn').addEventListener('click', function() {
+    const btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="mdi mdi-loading mdi-spin me-1"></span> Yukleniyor...';
+
+    Swal.fire({
+        title: 'Veriler Guncelleniyor',
+        text: 'iKas API\'den MeyruKids siparisleri cekiliyor. Bu islem 10-30 saniye surebilir.',
+        icon: 'info',
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    fetch('meyru_ikas_vericek.php')
+        .then(r => r.json())
+        .then(data => {
+            Swal.fire({
+                title: data.status === 'success' ? 'Tamamlandi!' : 'Hata!',
+                text: data.message,
+                icon: data.status === 'success' ? 'success' : 'error',
+                confirmButtonText: 'Tamam'
+            }).then(() => {
+                if (data.status === 'success') location.reload();
+            });
+        })
+        .catch(() => {
+            Swal.fire('Hata', 'Baglanti hatasi olustu.', 'error');
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = '<span class="mdi mdi-refresh me-1"></span> Verileri Guncelle';
+        });
+});
+</script>
 </body>
 </html>
