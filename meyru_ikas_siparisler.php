@@ -46,6 +46,11 @@ query listOrder($pagination: PaginationInput!, $orderedAt: DateFilterInput) {
                 quantity
                 finalPrice
             }
+            paymentMethods {
+                price
+                type
+                paymentGatewayName
+            }
         }
     }
 }
@@ -96,6 +101,15 @@ $paymentLabels = [
     'PAID'      => ['Ödendi',     'success'],
     'REFUNDED'  => ['İade',       'danger'],
     'CANCELLED' => ['İptal',      'secondary'],
+];
+
+$paymentTypeLabels = [
+    'CREDIT_CARD'       => ['Kredi Kartı',   'primary'],
+    'MONEY_ORDER'       => ['Havale/EFT',    'info'],
+    'CASH_ON_DELIVERY'  => ['Kapıda Ödeme',  'warning'],
+    'CASH'              => ['Nakit',          'success'],
+    'GIFT_CARD'         => ['Hediye Kartı',  'secondary'],
+    'INSTALLMENT'       => ['Taksit',         'primary'],
 ];
 ?>
 <!DOCTYPE html>
@@ -193,6 +207,7 @@ $paymentLabels = [
                                         <th>İl / İlçe</th>
                                         <th>Ürünler</th>
                                         <th>Tutar</th>
+                                        <th>Ödeme Yöntemi</th>
                                         <th>Ödeme Durumu</th>
                                         <th>Tarih</th>
                                     </tr>
@@ -219,6 +234,17 @@ $paymentLabels = [
                                         $urunler[] = htmlspecialchars($urunAdi) . ' x' . $adet;
                                     }
                                     $urunlerStr = implode('<br>', $urunler);
+
+                                    $paymentMethodStr = '-';
+                                    $paymentMethodColor = 'secondary';
+                                    $pmList = $order['paymentMethods'] ?? [];
+                                    if (!empty($pmList)) {
+                                        $pm = $pmList[0];
+                                        $pmType = $pm['type'] ?? '';
+                                        [$pmLabel, $paymentMethodColor] = $paymentTypeLabels[$pmType] ?? [htmlspecialchars($pmType), 'secondary'];
+                                        $gwName = !empty($pm['paymentGatewayName']) ? ' (' . htmlspecialchars($pm['paymentGatewayName']) . ')' : '';
+                                        $paymentMethodStr = $pmLabel . $gwName;
+                                    }
                                 ?>
                                     <tr>
                                         <td><?= $counter++ ?></td>
@@ -228,6 +254,7 @@ $paymentLabels = [
                                         <td><?= htmlspecialchars($il) ?> / <?= htmlspecialchars($ilce) ?></td>
                                         <td class="text-start" style="font-size:0.78rem;"><?= $urunlerStr ?></td>
                                         <td><strong><?= $tutar ?></strong></td>
+                                        <td><span class="badge bg-<?= $paymentMethodColor ?>"><?= $paymentMethodStr ?></span></td>
                                         <td><span class="badge bg-<?= $statusColor ?>"><?= $statusLabel ?></span></td>
                                         <td><?= $tarih ?></td>
                                     </tr>
