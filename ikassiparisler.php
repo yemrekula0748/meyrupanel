@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
@@ -9,225 +9,177 @@ if (!isset($_SESSION['user_id'])) {
 require_once 'DB.php';
 $db = new DB();
 
-// Yılları al
-$yearQuery = "SELECT DISTINCT YEAR(createdAt) AS year FROM ikas_siparisler ORDER BY year DESC";
-$yearResult = $db->query($yearQuery);
+// --- Ara tablo yoksa oluÅŸtur ---
+$db->query("CREATE TABLE IF NOT EXISTS ikas_bekleyen (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    siparis_no  VARCHAR(50) NOT NULL UNIQUE,
+    musteri_ismi VARCHAR(255),
+    adres       TEXT,
+    tarih       DATETIME,
+    sehir       VARCHAR(100),
+    ilce        VARCHAR(100),
+    urunler     TEXT,
+    telefon     VARCHAR(50),
+    kargo       VARCHAR(100),
+    toplam_fiyat VARCHAR(50),
+    ekleme_tarihi DATETIME DEFAULT CURRENT_TIMESTAMP
+)");
 
-$years = [];
-while ($row = $db->fetchAssoc($yearResult)) {
-    $years[] = $row['year'];
-}
+// --- ikas_son'dan siparis_no > 2400 ve ikas_bekleyen'e eklenmemiÅŸ olanlarÄ± al ---
+$bekleyenler = $db->query(
+    "SELECT * FROM ikas_son
+     WHERE CAST(siparis_no AS UNSIGNED) > 2400
+       AND siparis_no NOT IN (SELECT siparis_no FROM ikas_bekleyen)
+     ORDER BY CAST(siparis_no AS UNSIGNED) DESC"
+);
 
-// Varsayılan olarak mevcut yılın verilerini çekelim
-$currentYear = date('Y');
-$yearFilter = $_GET['year'] ?? $currentYear;
-$startDate = $_GET['start_date'] ?? null;
-$endDate = $_GET['end_date'] ?? null;
+$eklenenler  = 0;
+$hata_sayisi = 0;
 
-// Filtreleme ve SQL sorgusunun belirlenmesi
-$sql = '';
-$params = [];
-$types = '';
-
-if ($startDate && $endDate) {
-    $sql = "SELECT * FROM ikas_siparisler WHERE createdAt BETWEEN ? AND ? ORDER BY createdAt DESC";
-    $params = [$startDate, $endDate];
-    $types = 'ss';
-} elseif ($yearFilter === "all") {
-    $sql = "SELECT * FROM ikas_siparisler ORDER BY createdAt DESC";
-} else {
-    $sql = "SELECT * FROM ikas_siparisler WHERE YEAR(createdAt) = ? ORDER BY createdAt DESC";
-    $params = [$yearFilter];
-    $types = 's';
-}
-
-// SQL sorgusunu çalıştır
-try {
-    if (!empty($params)) {
-        $result = $db->query($sql, $params, $types);
+while ($row = $bekleyenler->fetch_assoc()) {
+    $ekle = $db->query(
+        "INSERT IGNORE INTO ikas_bekleyen
+         (siparis_no, musteri_ismi, adres, tarih, sehir, ilce, urunler, telefon, kargo, toplam_fiyat)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            $row['siparis_no'],
+            $row['musteri_ismi'],
+            $row['adres'],
+            $row['tarih'],
+            $row['sehir'],
+            $row['ilce'],
+            $row['urunler'],
+            $row['telefon'],
+            $row['kargo'],
+            $row['toplam_fiyat'],
+        ],
+        "ssssssssss"
+    );
+    if ($ekle) {
+        $eklenenler++;
     } else {
-        $result = $db->query($sql);
+        $hata_sayisi++;
     }
-} catch (mysqli_sql_exception $e) {
-    die("SQL Sorgusu Hatası: " . $e->getMessage());
 }
 
-// Siparişleri çek
-$orders = [];
-while ($row = $db->fetchAssoc($result)) {
-    $orders[] = $row;
-}
+// --- TÃ¼m ikas_bekleyen kayÄ±tlarÄ±nÄ± listele (yeniden sorgula) ---
+$tumListele = $db->query(
+    "SELECT * FROM ikas_bekleyen ORDER BY CAST(siparis_no AS UNSIGNED) DESC"
+);
+$toplamSayim = $db->query("SELECT COUNT(*) AS c FROM ikas_bekleyen")->fetch_assoc()['c'] ?? 0;
 ?>
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <title>iKas Siparişleri | Admin Panel</title>
+    <meta charset="utf-8" />
+    <title>SatÄ±ÅŸ Panel | iKas Bekleyen (2400+)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- App favicon -->
     <link rel="shortcut icon" href="assets/images/favicon.ico">
-
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
-    <!-- App CSS (Bootstrap, vs.) -->
-    <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-style" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-    
-
-    <!-- DataTables CSS (Bootstrap 5) -->
-    <link
-        rel="stylesheet"
-        href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css"
-    >
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f5f5f5 !important; font-family: 'Inter', sans-serif !important; }
+        .card { border-radius: 1rem !important; border: none !important; box-shadow: 0 4px 6px -1px rgba(196,26,26,.08), 0 10px 30px -5px rgba(196,26,26,.10) !important; }
+        .card-header { background: linear-gradient(135deg, #c41a1a 0%, #8b0f0f 100%) !important; border-radius: 1rem 1rem 0 0 !important; padding: 14px 20px !important; border: none !important; }
+        .card-header .card-title { color: #fff !important; font-weight: 700 !important; font-size: 1rem !important; margin: 0 !important; }
+        .table thead th { background: linear-gradient(135deg, #c41a1a 0%, #8b0f0f 100%) !important; color: #fff !important; font-weight: 600 !important; font-size: .75rem !important; text-transform: uppercase !important; letter-spacing: .05em !important; white-space: nowrap !important; border: none !important; padding: 12px 10px !important; }
+        .table tbody td { font-size: .84rem !important; vertical-align: middle !important; color: #374151 !important; border-color: #f3f4f6 !important; }
+        .table tbody tr:hover td { background-color: #fff5f5 !important; }
+        .cs-page-title { display: inline-flex; align-items: center; gap: 10px; font-weight: 700 !important; color: #c41a1a !important; }
+        .cs-page-title-bar { width: 4px; height: 28px; background: linear-gradient(135deg, #c41a1a, #8b0f0f); border-radius: 4px; display: inline-block; }
+        .alert-cs { padding: 12px 16px; border-left: 4px solid #c41a1a; background: #fff5f5; border-radius: .5rem; font-size: .9rem; }
+        .badge { font-weight: 600 !important; border-radius: 9999px !important; }
+        .tr-new td { background-color: #f0fff4 !important; }
+    </style>
 </head>
 <body data-menu-color="light" data-sidebar="default">
 <div id="app-layout">
-<?php include 'tema/menu.php'; ?>
-
+    <?php include 'tema/menu.php'; ?>
     <div class="content-page">
         <div class="content">
             <div class="container-fluid">
 
-                <!-- Başlık / Header benzeri -->
-                <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-                    <div class="flex-grow-1">
-                        <h4 class="fs-18 fw-semibold m-0">iKas Sipariş Listesi</h4>
-                        <p class="text-muted fs-14 mt-1">
-                            Veritabanına kaydedilen iKas siparişlerini görüntüleyin.
-                        </p>
-                        <div class="d-flex align-items-center">
-                        <!-- Bacanak istemedi :) -->
-                        <!--<input type="date" id="startDate" class="form-control me-2" placeholder="Başlangıç Tarihi">
-                        <input type="date" id="endDate" class="form-control me-2" placeholder="Bitiş Tarihi">
-                        <button id="filterDate" class="btn btn-primary">Filtrele</button>-->
-                    </div>
-                    </div>
+                <div class="py-3 d-flex align-items-center">
+                    <h4 class="fs-18 m-0 cs-page-title">
+                        <span class="cs-page-title-bar"></span>
+                        iKas Bekleyen SipariÅŸler â€” No &gt; 2400
+                    </h4>
                 </div>
 
-                <!-- Yıl Butonları -->
-                <div class="d-flex mb-3">
-                    <button class="btn btn-secondary me-2 year-filter" data-year="all">Tüm Yıllar</button>
-                    <?php foreach ($years as $year): ?>
-                        <button 
-                            class="btn btn-secondary me-2 year-filter <?= ($year == $yearFilter) ? 'btn-primary' : '' ?>" 
-                            data-year="<?= $year ?>">
-                            <?= $year ?>
-                        </button>
-                    <?php endforeach; ?>
+                <div class="alert-cs mb-3">
+                    <?php if ($eklenenler > 0): ?>
+                        <strong class="text-success">âœ“ <?= $eklenenler ?> yeni sipariÅŸ <code>ikas_bekleyen</code> tablosuna eklendi.</strong>
+                    <?php else: ?>
+                        <strong>Yeni eklenecek sipariÅŸ bulunamadÄ±.</strong> (TÃ¼m 2400+ sipariÅŸler zaten kayÄ±tlÄ±.)
+                    <?php endif; ?>
+                    <?php if ($hata_sayisi > 0): ?>
+                        <br><span class="text-danger"><?= $hata_sayisi ?> sipariÅŸ eklenirken hata oluÅŸtu.</span>
+                    <?php endif; ?>
+                    <span class="ms-3 text-muted" style="font-size:.82rem;">Toplam <strong><?= $toplamSayim ?></strong> kayÄ±t</span>
                 </div>
 
-                <!-- Tablo Alanı -->
-                <div class="table-responsive bg-white p-3 rounded shadow-sm">
-                    <table
-                        id="ikasOrderTable"
-                        class="table table-bordered table-hover align-middle"
-                    >
-                        <thead class="table-light">
-                            <tr>
-                                <th>Sipariş Numarası</th>
-                                <th>Toplam Fiyat</th>
-                                <th>Tarih</th>
-                                <th>Müşteri</th>
-                                <th>Şehir</th>
-                                <th>Ürün Adları</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <?php if (!empty($orders)): ?>
-                            <?php foreach ($orders as $order): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($order['orderNumber']) ?></td>
-                                    <td><?= htmlspecialchars($order['totalFinalPrice']) ?> TL</td>
-                                    <td><?= htmlspecialchars($order['createdAt']) ?></td>
-                                    <td><?= htmlspecialchars($order['customer_firstname'] . ' ' . $order['customer_lastname']) ?></td>
-                                    <td><?= htmlspecialchars($order['city']) ?></td>
-                                    <td><?= htmlspecialchars($order['productNames']) ?></td>
-                                </tr>
-                            <?php endforeach; ?>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">ikas_bekleyen Tablosu</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <?php if ($toplamSayim == 0): ?>
+                            <p class="text-center text-muted py-4">KayÄ±t bulunamadÄ±.</p>
                         <?php else: ?>
-                            <tr>
-                                <td colspan="6" class="text-muted text-center">Henüz sipariş yok.</td>
-                            </tr>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered text-center align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>SipariÅŸ No</th>
+                                        <th>MÃ¼ÅŸteri</th>
+                                        <th>Telefon</th>
+                                        <th>Ä°l / Ä°lÃ§e</th>
+                                        <th>ÃœrÃ¼nler</th>
+                                        <th>Tutar</th>
+                                        <th>Kargo</th>
+                                        <th>SipariÅŸ Tarihi</th>
+                                        <th>Eklenme</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <?php
+                                $sayac = 1;
+                                while ($r = $tumListele->fetch_assoc()):
+                                    $isYeni = ($eklenenler > 0 && strtotime($r['ekleme_tarihi']) >= strtotime('-10 seconds'));
+                                ?>
+                                    <tr<?= $isYeni ? ' class="tr-new"' : '' ?>>
+                                        <td><?= $sayac++ ?></td>
+                                        <td>
+                                            <strong><?= htmlspecialchars($r['siparis_no']) ?></strong>
+                                            <?php if ($isYeni): ?><span class="badge bg-success ms-1">Yeni</span><?php endif; ?>
+                                        </td>
+                                        <td><?= htmlspecialchars($r['musteri_ismi'] ?? '') ?></td>
+                                        <td><?= htmlspecialchars($r['telefon'] ?? '') ?></td>
+                                        <td><?= htmlspecialchars(($r['sehir'] ?? '-') . ' / ' . ($r['ilce'] ?? '-')) ?></td>
+                                        <td class="text-start" style="font-size:.78rem;"><?= nl2br(htmlspecialchars($r['urunler'] ?? '')) ?></td>
+                                        <td><strong><?= htmlspecialchars($r['toplam_fiyat'] ?? '-') ?> TL</strong></td>
+                                        <td><?= htmlspecialchars($r['kargo'] ?? '-') ?></td>
+                                        <td><?= !empty($r['tarih']) ? date('d-m-Y H:i', strtotime($r['tarih'])) : '-' ?></td>
+                                        <td style="font-size:.75rem;color:#6b7280;"><?= !empty($r['ekleme_tarihi']) ? date('d-m-Y H:i', strtotime($r['ekleme_tarihi'])) : '-' ?></td>
+                                    </tr>
+                                <?php endwhile; ?>
+                                </tbody>
+                            </table>
+                        </div>
                         <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div> <!-- /.table-responsive -->
+                    </div>
+                </div>
 
-            </div><!-- /.container-fluid -->
-        </div><!-- /.content -->
-    </div><!-- /.content-page -->
-
-    <!-- Footer (örnek) -->
-    <?php include 'tema/footer.php'; ?>
-
-</div><!-- /#app-layout -->
-
-
-
-<!-- Gerekli JS Kütüphaneleri -->
+            </div>
+        </div>
+        <?php include 'tema/footer.php'; ?>
+    </div>
+</div>
 <script src="assets/libs/jquery/jquery.min.js"></script>
 <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets/libs/simplebar/simplebar.min.js"></script>
-<script src="assets/libs/node-waves/waves.min.js"></script>
-<script src="assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
-<script src="assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
-<script src="assets/libs/feather-icons/feather.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>        
-<script src="assets/libs/jquery-ui/jquery-ui.min.js"></script>				
-<script  src="./script.js"></script>
-
-
-<!-- DataTables JS -->
-<script
-    src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"
-></script>
-<script
-    src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"
-></script>
-
-
-
-<!-- App JS -->
 <script src="assets/js/app.js"></script>
-
-<script>
-$('#ikasOrderTable').DataTable({
-    pageLength: 10,  // İlk açılışta sayfa başına 10 kayıt göster
-    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Hepsi"]],
-    language: {
-        url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/tr.json"
-    },
-    order: [[0, "desc"]] 
-    // Burada 0 ilk kolonu temsil eder; "desc" ise azalan sıralama anlamına gelir.
-});
-
-</script>
-
-<script>
-$(document).ready(function(){
-    $('#ikasOrderTable').DataTable();
-
-    // Yıl Butonlarına Tıklama
-    $('.year-filter').click(function() {
-        const year = $(this).data('year');
-        window.location.href = `?year=${year}`;
-    });
-
-    // Tarih Aralığı Filtreleme
-    $('#filterDate').click(function() {
-        const startDate = $('#startDate').val();
-        const endDate = $('#endDate').val();
-        if (startDate && endDate) {
-            window.location.href = `?start_date=${startDate}&end_date=${endDate}`;
-        } else {
-            alert("Lütfen her iki tarihi de giriniz.");
-        }
-    });
-});
-</script>
 </body>
 </html>
