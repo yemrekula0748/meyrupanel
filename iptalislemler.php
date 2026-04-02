@@ -61,9 +61,7 @@ if (!isset($_SESSION['user_id'])) {
                     <div class="container-fluid">
                         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                             <div class="flex-grow-1">
-							<button class="btn btn-warning me-2" onclick="window.location.href='export_excel_gider_hepsijet.php'">HJ YunusEmre</button>
-							<button class="btn btn-warning me-2" onclick="window.location.href='export_excel_gider_yunusemre.php'">PTT YunusEmre</button>
-							<button class="btn btn-warning me-2" onclick="window.location.href='export_excel_gider_sevim.php'">PTT SevimAydın</button>
+							<button class="btn btn-warning me-2" onclick="window.location.href='export_excel_gider_yunusemre.php'">Excel İndir</button>
                                 <h4 class="fs-18 fw-semibold m-0">Girilen Siparişler</h4>
                             </div>
                         </div>
