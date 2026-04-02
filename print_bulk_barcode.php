@@ -82,7 +82,7 @@ foreach ($orders as $order) {
     $pdf->SetFont($fontName, '', 9);
     $pdf->MultiCell(
         40, 4,
-        "MeyruKids\nBaraj Mah. Kırçiçeği Cad.\n1A+2A Blok 104 A\nKepez / ANTALYA\n" . $order['kargo'],
+        "MeyruKids\nvarsak Süleyman Demirel bulvarı Karşıyaka mahallesi\nNo 137 A\nKepez / ANTALYA\n" . $order['kargo'],
         0,
         'L',
         false

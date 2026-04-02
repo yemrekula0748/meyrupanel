@@ -57,7 +57,7 @@ $pdf->SetFont('helvetica', '', 10);
 $pdf->Cell(0, 10, 'Fatura', 0, 1, 'C');
 $pdf->Ln(10);
 $pdf->Cell(0, 10, 'Gönderici Bilgileri:', 0, 1);
-$pdf->MultiCell(0, 5, "MeyruKids\nBaraj Mah. Kırçiçeği Cad. 1A+2A Blok 104 A\nKepez / ANTALYA", 0, 'L');
+$pdf->MultiCell(0, 5, "MeyruKids\n varsak Süleyman Demirel bulvarı Karşıyaka mahallesi no 137 A \nKepez / ANTALYA", 0, 'L');
 
 // Alıcı Bilgileri
 $pdf->Ln(10);

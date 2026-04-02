@@ -107,7 +107,7 @@ if ($total_records > 0) {
         $odeme_sarti_yazi = sayiYaziyla($kdv_dahil_fiyat);
         $kargo_sorumlu = '';
         if (strpos($row['hangikargo'], 'MeyruKids') !== false) {
-            $kargo_sorumlu = 'MEYRUIDS - Merve Incir';
+            $kargo_sorumlu = 'MEYRUKIDS - Merve Incir';
         } elseif (strpos($row['hangikargo'], 'Sevim Aydın - PTT') !== false) {
             $kargo_sorumlu = 'Sevim Aydın';
         }

@@ -61,7 +61,7 @@ if ($result->num_rows > 0) {
         $pdf->Cell(90, 5, 'GÖNDERİCİ:', 0, 1, 'L', false);
         $pdf->SetFont($fontName, '', 9);
         $pdf->SetX(6);
-        $pdf->MultiCell(90, 4, $gondericiIsmi . "\nBaraj Mah. Kırçiçeği Cad.\n1A+2A Blok 104 A\nKepez / ANTALYA\n" . $ucretTipi, 0, 'L', false);
+        $pdf->MultiCell(90, 4, $gondericiIsmi . "\nvarsak Süleyman Demirel bulvarı Karşıyaka mahallesi\nNO 137 A\nKepez / ANTALYA\n" . $ucretTipi, 0, 'L', false);
 
         // Alıcı Bilgileri
         $pdf->SetFont($fontName, 'B', 10);
