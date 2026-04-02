@@ -39,7 +39,7 @@ if ($result->num_rows > 0) {
         $pdf->SetFont('helvetica', 'B', 10);
         $pdf->Cell(0, 5, 'GÖNDERİCİ:', 0, 1, 'L');
         $pdf->SetFont('helvetica', '', 9);
-        $pdf->MultiCell(0, 5, "MeyruKids\nvarsak Süleyman Demirel bulvarı Karşıyaka mahallesi\nno 137/a \nKepez / ANTALYA\nBEDELSİZ", 0, 'L');
+        $pdf->MultiCell(0, 5, "MeyruKids\nvarsak Süleyman Demirel bulvarı \n Karşıyaka mahallesi\nno 137/a \nKepez / ANTALYA\nBEDELSİZ", 0, 'L');
 
         // Alıcı bilgileri
         $pdf->Ln(5);
