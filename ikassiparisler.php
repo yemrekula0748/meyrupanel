@@ -32,10 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'ekle_
     }
 
     $odeme_yontemi = $row['odeme_yontemi'] ?? '';
-    if ($odeme_yontemi === 'CASH_ON_DELIVERY') {
+    if (strpos($odeme_yontemi, 'CASH_ON_DELIVERY') !== false) {
         $kargo       = 'Ödeme Şartlı';
         $odeme_sarti = (int)$row['toplam_fiyat'];
-    } elseif ($odeme_yontemi === 'CREDIT_CARD') {
+    } elseif (strpos($odeme_yontemi, 'CREDIT_CARD') !== false) {
         $kargo       = 'Bedelsiz';
         $odeme_sarti = 0;
     } else {
@@ -82,22 +82,40 @@ $toDate   = $_GET['to']   ?? date('Y-m-d');
 
 $totalCount = 0;
 $orders     = [];
+$addedSet   = [];
 
 if ($tableExists) {
     $countRow = $db->query(
-        "SELECT COUNT(*) AS c FROM meyru_ikas_son WHERE DATE(tarih) BETWEEN ? AND ? AND (odeme_yontemi IS NULL OR odeme_yontemi != 'MONEY_ORDER')",
+        "SELECT COUNT(*) AS c FROM meyru_ikas_son WHERE DATE(tarih) BETWEEN ? AND ? AND (odeme_yontemi IS NULL OR odeme_yontemi NOT LIKE 'MONEY_ORDER%')",
         [$fromDate, $toDate], "ss"
     )->fetch_assoc();
     $totalCount = (int)($countRow['c'] ?? 0);
 
     $offset = ($page - 1) * $limit;
     $result = $db->query(
-        "SELECT * FROM meyru_ikas_son WHERE DATE(tarih) BETWEEN ? AND ? AND (odeme_yontemi IS NULL OR odeme_yontemi != 'MONEY_ORDER')
+        "SELECT * FROM meyru_ikas_son WHERE DATE(tarih) BETWEEN ? AND ? AND (odeme_yontemi IS NULL OR odeme_yontemi NOT LIKE 'MONEY_ORDER%')
          ORDER BY tarih DESC LIMIT ? OFFSET ?",
         [$fromDate, $toDate, $limit, $offset], "ssii"
     );
     while ($row = $result->fetch_assoc()) {
         $orders[] = $row;
+    }
+
+    // Hangi siparisler zaten siparisler tablosuna eklenmis?
+    $addedSet = [];
+    if (!empty($orders)) {
+        $siparisNolar = array_filter(array_column($orders, 'siparis_no'));
+        if (!empty($siparisNolar)) {
+            $placeholders = implode(',', array_fill(0, count($siparisNolar), '?'));
+            $types = str_repeat('s', count($siparisNolar));
+            $addedResult = $db->query(
+                "SELECT ikasno FROM siparisler WHERE ikasno IN ($placeholders)",
+                $siparisNolar, $types
+            );
+            while ($addedRow = $addedResult->fetch_assoc()) {
+                $addedSet[$addedRow['ikasno']] = true;
+            }
+        }
     }
 }
 
@@ -130,6 +148,8 @@ $paymentLabels = [
         .table thead th { background: linear-gradient(135deg, #c41a1a 0%, #8b0f0f 100%) !important; color: #fff !important; font-weight: 600 !important; font-size: .75rem !important; text-transform: uppercase !important; letter-spacing: .05em !important; white-space: nowrap !important; border: none !important; padding: 12px 10px !important; }
         .table tbody td { font-size: .84rem !important; vertical-align: middle !important; color: #374151 !important; border-color: #f3f4f6 !important; }
         .table tbody tr:hover td { background-color: #fff5f5 !important; }
+        .siparis-eklendi td { text-decoration: line-through; opacity: .55; }
+        .siparis-eklendi .ekle-btn { pointer-events: none; opacity: .4; cursor: not-allowed; }
         .cs-page-title { display: inline-flex; align-items: center; gap: 10px; font-weight: 700 !important; color: #c41a1a !important; }
         .cs-page-title-bar { width: 4px; height: 28px; background: linear-gradient(135deg, #c41a1a, #8b0f0f); border-radius: 4px; display: inline-block; }
         .badge { font-weight: 600 !important; border-radius: 9999px !important; }
@@ -229,10 +249,11 @@ $paymentLabels = [
                                     $tarih = !empty($r['tarih']) ? date('d-m-Y H:i', strtotime($r['tarih'])) : '-';
                                     $status = $r['odeme_durumu'] ?? '';
                                     [$statusLabel, $statusColor] = $paymentLabels[$status] ?? [$status, 'secondary'];
+                                    $zatenEklendi = isset($addedSet[$r['siparis_no']]);
                                 ?>
-                                    <tr>
+                                    <tr<?= $zatenEklendi ? ' class="siparis-eklendi"' : '' ?>>
                                         <td>
-                                            <button class="btn btn-sm btn-success ekle-btn" data-siparis="<?= htmlspecialchars($r['siparis_no'] ?? '', ENT_QUOTES) ?>" title="Siparislerime Ekle" style="font-size:1rem;line-height:1;padding:2px 8px;">+</button>
+                                            <button class="btn btn-sm btn-success ekle-btn" data-siparis="<?= htmlspecialchars($r['siparis_no'] ?? '', ENT_QUOTES) ?>" title="Siparislerime Ekle" style="font-size:1rem;line-height:1;padding:2px 8px;"><?= $zatenEklendi ? '✓' : '+' ?></button>
                                         </td>
                                         <td><?= $counter++ ?></td>
                                         <td><strong><?= htmlspecialchars($r['siparis_no'] ?? '') ?></strong></td>
@@ -302,6 +323,13 @@ document.querySelectorAll('.ekle-btn').forEach(function(btn) {
                     icon: data.status === 'success' ? 'success' : 'error',
                     confirmButtonText: 'Tamam'
                 });
+                if (data.status === 'success') {
+                    const row = btn.closest('tr');
+                    row.classList.add('siparis-eklendi');
+                    btn.textContent = '✓';
+                    btn.style.pointerEvents = 'none';
+                    btn.style.opacity = '0.4';
+                }
             })
             .catch(() => {
                 Swal.fire('Hata', 'Bağlantı hatası oluştu.', 'error');
