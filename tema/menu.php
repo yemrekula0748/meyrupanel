@@ -241,9 +241,6 @@ try {
             <a class="nav-link" href="ayni_siparisler.php">Aynı Siparişler</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="iptalislemler.php">Gider Pusulası</a>
-        </li>
-        <li class="nav-item">
             <a class="nav-link" href="barkodlar.php">Yüklü Barkodlar</a>
         </li>
         <li class="nav-item">
@@ -309,13 +306,6 @@ try {
                         <span> Aynı Siparişler </span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="iptalislemler.php">
-					<i data-feather="x"></i>
-                       <span>Gider Pusulası</span>
-                    </a>
-                </li>
-
                 <li>
                     <a href="barkodlar.php" class="tp-link">
                         <i data-feather="map-pin"></i>
