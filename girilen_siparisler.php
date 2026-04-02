@@ -353,7 +353,13 @@ $counter = 1; // Sayaç başlangıç değeri ?>
                                          
 
 <td><?= $counter++ ?></td>
-<td><?= htmlspecialchars($row['id'] ?? '') ?></td>
+<td>
+    <?php if (!empty($row['ikasmi'])): ?>
+        <span class="badge rounded-pill bg-info text-dark">iKas</span>
+    <?php else: ?>
+        <?= htmlspecialchars($row['id'] ?? '') ?>
+    <?php endif; ?>
+</td>
                                                 <td>
     <?php
         $barkodNo = $row['kargo_barkodu'] ?? '';
@@ -400,15 +406,7 @@ $counter = 1; // Sayaç başlangıç değeri ?>
                                                 <td><?= htmlspecialchars($odemeSarti) ?></td>
                                                 <td class="text-center">
                                                 <div style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-                                                    <!-- Düzenle İkonu -->
-                                                    <span class="mdi mdi-pencil-outline text-primary" 
-                                                        style="font-size: 18px; cursor: pointer;" 
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#duzenleModal<?= htmlspecialchars($row['id']) ?>" 
-                                                        data-bs-toggle="tooltip" 
-                                                        data-bs-placement="top" 
-                                                        title="Düzenle">
-                                                    </span>
+                                                    <!-- Düzenle İkonu gizlendi -->
 
                                                     <!-- Sil İkonu -->
                     <a href="siparis_sil.php?id=<?= $row['id'] ?>" 
