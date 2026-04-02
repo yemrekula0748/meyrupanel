@@ -137,7 +137,7 @@ if ($total_records > 0) {
         $html = str_replace('{{kdv_tutari}}', number_format($kdv_tutari, 2, ',', '.'), $html);
         $html = str_replace('{{odeme_sarti_yazi}}', $odeme_sarti_yazi, $html);
         $html = str_replace('{{kargo_sorumlu}}', $kargo_sorumlu, $html);
-        $html = str_replace('{{birim_fiyat}}', number_format($row['birim_fiyat'], 2, ".", "") . ' ₺', $html);
+        $html = str_replace('{{birim_fiyat}}', number_format($row['birim_fiyat'] ?? 0, 2, ".", "") . ' ₺', $html);
 		
 		// Mevcut hangikargo değerini al
 $hangikargo = $row['hangikargo'];
