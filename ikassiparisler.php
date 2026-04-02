@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'ekle_
             $row['telefon'],
             $user_name,
             $odeme_sarti,
-            'MeyruKids iKas',
+            'iKas',
             1,
             $kargo,
             1
