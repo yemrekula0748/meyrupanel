@@ -354,10 +354,9 @@ $counter = 1; // Sayaç başlangıç değeri ?>
 
 <td><?= $counter++ ?></td>
 <td>
+    <?= htmlspecialchars($row['id'] ?? '') ?>
     <?php if (!empty($row['ikasmi'])): ?>
-        <span class="badge rounded-pill bg-info text-dark">iKas</span>
-    <?php else: ?>
-        <?= htmlspecialchars($row['id'] ?? '') ?>
+        <br><span class="badge rounded-pill bg-info text-dark">iKas</span>
     <?php endif; ?>
 </td>
                                                 <td>
