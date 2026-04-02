@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'ekle_
             $kargo,
             1
         ],
-        "ssssssssssissi"
+        "sssssssssisisi"
     );
 
     echo json_encode(['status' => 'success', 'message' => 'Siparis basariyla eklendi.']);
