@@ -8,6 +8,70 @@ if (!isset($_SESSION['user_id'])) {
 require_once 'DB.php';
 $db = new DB();
 
+// AJAX: siparisi siparisler tablosuna ekle
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'ekle_siparise') {
+    header('Content-Type: application/json; charset=utf-8');
+    $siparis_no = trim($_POST['siparis_no'] ?? '');
+    if (empty($siparis_no)) {
+        echo json_encode(['status' => 'error', 'message' => 'Siparis no eksik.']);
+        exit;
+    }
+
+    // meyru_ikas_son tablosundan siparisi getir
+    $row = $db->query("SELECT * FROM meyru_ikas_son WHERE siparis_no = ?", [$siparis_no], "s")->fetch_assoc();
+    if (!$row) {
+        echo json_encode(['status' => 'error', 'message' => 'Siparis bulunamadi.']);
+        exit;
+    }
+
+    // Daha once eklenmis mi kontrol et
+    $kontrol = $db->query("SELECT id FROM siparisler WHERE ikasno = ?", [$siparis_no], "s");
+    if ($kontrol->num_rows > 0) {
+        echo json_encode(['status' => 'error', 'message' => 'Bu siparis zaten siparisler tablosuna eklenmis.']);
+        exit;
+    }
+
+    $odeme_yontemi = $row['odeme_yontemi'] ?? '';
+    if ($odeme_yontemi === 'CASH_ON_DELIVERY') {
+        $kargo       = 'Ödeme Şartlı';
+        $odeme_sarti = (int)$row['toplam_fiyat'];
+    } elseif ($odeme_yontemi === 'CREDIT_CARD') {
+        $kargo       = 'Bedelsiz';
+        $odeme_sarti = 0;
+    } else {
+        $kargo       = $odeme_yontemi;
+        $odeme_sarti = (int)$row['toplam_fiyat'];
+    }
+
+    $user_name = $_SESSION['user_name'] ?? 'Bilinmiyor';
+
+    $db->query(
+        "INSERT INTO siparisler
+        (ikasno, musteri_ismi, musteri_adresi, siparis_tarihi, musteri_il, musteri_ilce, urunler, musteri_telefonu, hangikargo, odeme_sarti, hangisayfa, desi, kargo, ikasmi)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            $siparis_no,
+            $row['musteri_ismi'],
+            $row['adres'],
+            $row['tarih'],
+            $row['sehir'],
+            $row['ilce'],
+            $row['urunler'],
+            $row['telefon'],
+            $user_name,
+            $odeme_sarti,
+            'MeyruKids iKas',
+            1,
+            $kargo,
+            1
+        ],
+        "ssssssssssissi"
+    );
+
+    echo json_encode(['status' => 'success', 'message' => 'Siparis basariyla eklendi.']);
+    exit;
+}
+
 // meyru_ikas_son tablosu yoksa bildir
 $tableExists = $db->query("SHOW TABLES LIKE 'meyru_ikas_son'")->num_rows > 0;
 
@@ -21,14 +85,14 @@ $orders     = [];
 
 if ($tableExists) {
     $countRow = $db->query(
-        "SELECT COUNT(*) AS c FROM meyru_ikas_son WHERE DATE(tarih) BETWEEN ? AND ?",
+        "SELECT COUNT(*) AS c FROM meyru_ikas_son WHERE DATE(tarih) BETWEEN ? AND ? AND (odeme_yontemi IS NULL OR odeme_yontemi != 'MONEY_ORDER')",
         [$fromDate, $toDate], "ss"
     )->fetch_assoc();
     $totalCount = (int)($countRow['c'] ?? 0);
 
     $offset = ($page - 1) * $limit;
     $result = $db->query(
-        "SELECT * FROM meyru_ikas_son WHERE DATE(tarih) BETWEEN ? AND ?
+        "SELECT * FROM meyru_ikas_son WHERE DATE(tarih) BETWEEN ? AND ? AND (odeme_yontemi IS NULL OR odeme_yontemi != 'MONEY_ORDER')
          ORDER BY tarih DESC LIMIT ? OFFSET ?",
         [$fromDate, $toDate, $limit, $offset], "ssii"
     );
@@ -144,6 +208,7 @@ $paymentLabels = [
                             <table class="table table-striped table-bordered text-center align-middle mb-0">
                                 <thead>
                                     <tr>
+                                        <th></th>
                                         <th>#</th>
                                         <th>Siparis No</th>
                                         <th>Musteri</th>
@@ -166,6 +231,9 @@ $paymentLabels = [
                                     [$statusLabel, $statusColor] = $paymentLabels[$status] ?? [$status, 'secondary'];
                                 ?>
                                     <tr>
+                                        <td>
+                                            <button class="btn btn-sm btn-success ekle-btn" data-siparis="<?= htmlspecialchars($r['siparis_no'] ?? '', ENT_QUOTES) ?>" title="Siparislerime Ekle" style="font-size:1rem;line-height:1;padding:2px 8px;">+</button>
+                                        </td>
                                         <td><?= $counter++ ?></td>
                                         <td><strong><?= htmlspecialchars($r['siparis_no'] ?? '') ?></strong></td>
                                         <td><?= htmlspecialchars($r['musteri_ismi'] ?? '') ?></td>
@@ -205,6 +273,43 @@ $paymentLabels = [
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="assets/js/app.js"></script>
 <script>
+document.querySelectorAll('.ekle-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        const siparisNo = this.dataset.siparis;
+        Swal.fire({
+            title: 'Onay',
+            text: 'Bu sipariş siparişlerim tablosuna eklenecek. Onaylıyor musunuz?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Evet, Ekle',
+            cancelButtonText: 'İptal',
+            confirmButtonColor: '#16a34a',
+            cancelButtonColor: '#c41a1a'
+        }).then(function(result) {
+            if (!result.isConfirmed) return;
+            const formData = new FormData();
+            formData.append('action', 'ekle_siparise');
+            formData.append('siparis_no', siparisNo);
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => r.json())
+            .then(data => {
+                Swal.fire({
+                    title: data.status === 'success' ? 'Başarılı!' : 'Hata!',
+                    text: data.message,
+                    icon: data.status === 'success' ? 'success' : 'error',
+                    confirmButtonText: 'Tamam'
+                });
+            })
+            .catch(() => {
+                Swal.fire('Hata', 'Bağlantı hatası oluştu.', 'error');
+            });
+        });
+    });
+});
+
 document.getElementById('veriCekBtn').addEventListener('click', function() {
     const btn = this;
     btn.disabled = true;
