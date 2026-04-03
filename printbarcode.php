@@ -183,7 +183,7 @@ require_once 'DB.php';
                                                     <?php elseif ($row['kargo'] === 'Bedelsiz'): ?>
                                                         <span class="badge rounded-pill text-bg-warning">Bedelsiz</span>
                                                     <?php else: ?>
-                                                       <span class="badge rounded-pill text-bg-info">SEM<?= htmlspecialchars($row['id']) ?></span>
+                                                       <span class="badge rounded-pill text-bg-info">MEY<?= htmlspecialchars($row['id']) ?></span>
 
                                                     <?php endif; ?>
                                                 </td>
