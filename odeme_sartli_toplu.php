@@ -132,12 +132,20 @@ if ($total_records > 0) {
         foreach ($urunSayilari as $urun => $adet) {
             $urunlerLines[] = $adet > 1 ? htmlspecialchars($urun) . ' - ' . $adet . ' ADET' : htmlspecialchars($urun);
         }
-        $satirSayisi = count($urunlerLines);
-        if ($satirSayisi <= 3) $urunFontSize = '27px';
-        elseif ($satirSayisi <= 5) $urunFontSize = '21px';
-        elseif ($satirSayisi <= 8) $urunFontSize = '16px';
-        else $urunFontSize = '13px';
-        $urunlerHtml = '<span style="font-size:' . $urunFontSize . ';font-weight:bold;">' . implode('<br>', $urunlerLines) . '</span>';
+        $urunlerHtml = '<table style="width:100%;border-collapse:collapse;">';
+        $chunks = array_chunk($urunlerLines, 3);
+        foreach ($chunks as $row3) {
+            $urunlerHtml .= '<tr>';
+            foreach ($row3 as $urunItem) {
+                $urunlerHtml .= '<td style="width:33%;padding:4px 6px;font-family:tahoma;font-size:16px;font-weight:bold;border:1px solid #ccc;text-align:center;vertical-align:middle;">' . $urunItem . '</td>';
+            }
+            // Eksik hücreleri doldur
+            for ($i = count($row3); $i < 3; $i++) {
+                $urunlerHtml .= '<td style="width:33%;border:1px solid #ccc;"></td>';
+            }
+            $urunlerHtml .= '</tr>';
+        }
+        $urunlerHtml .= '</table>';
         $html = str_replace('{{urunler}}', $urunlerHtml, $html);
         $html = str_replace('{{hangisayfa}}', htmlspecialchars($row['hangisayfa']), $html);
         $html = str_replace('{{musteri_il}}', htmlspecialchars($row['musteri_il']), $html);
