@@ -142,7 +142,13 @@ if ($total_records > 0) {
         foreach ($urunSayilari as $urun => $adet) {
             $urunlerLines[] = $adet > 1 ? htmlspecialchars($urun) . ' - ' . $adet . ' ADET' : htmlspecialchars($urun);
         }
-        $html = str_replace('{{urunler}}', implode('<br>', $urunlerLines), $html);
+        $satirSayisi = count($urunlerLines);
+        if ($satirSayisi <= 3) $urunFontSize = '27px';
+        elseif ($satirSayisi <= 5) $urunFontSize = '21px';
+        elseif ($satirSayisi <= 8) $urunFontSize = '16px';
+        else $urunFontSize = '13px';
+        $urunlerHtml = '<span style="font-size:' . $urunFontSize . ';font-weight:bold;">' . implode('<br>', $urunlerLines) . '</span>';
+        $html = str_replace('{{urunler}}', $urunlerHtml, $html);
 
         $html = str_replace('{{hangisayfa}}', htmlspecialchars($row['hangisayfa']), $html);
         $html = str_replace('{{musteri_il}}', htmlspecialchars($row['musteri_il']), $html);
