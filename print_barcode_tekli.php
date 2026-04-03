@@ -77,9 +77,9 @@ if ($result && $result->num_rows > 0) {
     
 
     // Ürün Bilgileri
-    $urunler = explode(",", $row['urunler']);
-    $urunler = array_map('trim', $urunler);
-    $urunSayilari = array_count_values($urunler);
+    $urunlerRaw = preg_split('/[\n,]+/', $row['urunler']);
+    $urunlerRaw = array_filter(array_map('trim', $urunlerRaw), function($v) { return $v !== ''; });
+    $urunSayilari = array_count_values(array_values($urunlerRaw));
     $urunlerLines = [];
     foreach ($urunSayilari as $urun => $adet) {
         if ($adet > 1) {
@@ -94,8 +94,10 @@ if ($result && $result->num_rows > 0) {
     $pdf->SetXY(6, 45);
     $pdf->MultiCell(90, 4, $urunlerString, 0, 'C', false);
 
-    // Adres
-    $pdf->SetXY(6, 72);
+    // Adres - ürünlerin hemen altına dinamik konumlandır
+    $adresY = $pdf->GetY() + 3;
+    if ($adresY > 100) $adresY = 100; // barkoda çok yaklaşmasın
+    $pdf->SetXY(6, $adresY);
     $pdf->MultiCell(90, 4, "ADRES: " . $row['musteri_adresi'], 0, 'C', false);
     
     // Barkod (en alta taşındı)
