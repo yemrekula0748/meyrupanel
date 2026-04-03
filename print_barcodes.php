@@ -75,17 +75,31 @@ if ($result->num_rows > 0) {
             0, 'R', false);
 
         // Ürün Bilgileri
-        $urunler = implode("\n", array_map('trim', explode(',', $row['urunler'])));
+        $urunlerRaw = preg_split('/[\n,]+/', $row['urunler']);
+        $urunlerRaw = array_filter(array_map('trim', $urunlerRaw), function($v) { return $v !== ''; });
+        $urunSayilari = array_count_values(array_values($urunlerRaw));
+        $urunlerLines = [];
+        foreach ($urunSayilari as $urun => $adet) {
+            if ($adet > 1) {
+                $urunlerLines[] = $urun . ' - ' . $adet . ' ADET';
+            } else {
+                $urunlerLines[] = $urun;
+            }
+        }
+        $urunlerString = implode("\n", $urunlerLines);
+
         $pdf->SetFont($fontName, '', 9);
         $pdf->SetXY(6, 45);
-        $pdf->MultiCell(90, 4, $urunler, 0, 'C', false);
+        $pdf->MultiCell(90, 4, $urunlerString, 0, 'C', false);
 
-        // Adres
-        $pdf->SetXY(6, 72);
+        // Adres - ürünlerin hemen altına dinamik konumlandır
+        $adresY = $pdf->GetY() + 3;
+        if ($adresY > 100) $adresY = 100;
+        $pdf->SetXY(6, $adresY);
         $pdf->MultiCell(90, 4, "ADRES: " . $row['musteri_adresi'], 0, 'C', false);
 
-        // Barkod
-        $pdf->SetXY(20, 90);
+        // Barkod (en alta taşındı)
+        $pdf->SetXY(20, 109);
         $style = [
             'align' => 'C',
             'stretch' => true,
@@ -98,20 +112,16 @@ if ($result->num_rows > 0) {
         ];
         $pdf->write1DBarcode($row['kargo_barkodu'], 'C128', '', '', 80, 20, 0.4, $style, 'N');
 
-       
-      
-      
-      
-         // Kargo Firması
-    $kargoFirmasi = getKargoFirmasi($row['kargo_barkodu']);
-    $pdf->SetFont($fontName, 'B', 10);
-    $pdf->SetXY(10, 115);
-    $pdf->Cell(0, 5, $kargoFirmasi, 0, 1, 'C');
+        // Kargo Firması
+        $kargoFirmasi = getKargoFirmasi($row['kargo_barkodu']);
+        $pdf->SetFont($fontName, 'B', 10);
+        $pdf->SetXY(10, 131);
+        $pdf->Cell(0, 5, $kargoFirmasi, 0, 1, 'C');
 
-    // Kaynak bilgisi
-    $pdf->SetFont($fontName, '', 10);
- 	 $pdf->SetXY(10, 125);
-    $pdf->Cell(0, 5, $row['hangisayfa'], 0, 1, 'C');
+        // Kaynak bilgisi
+        $pdf->SetFont($fontName, '', 10);
+        $pdf->SetXY(10, 138);
+        $pdf->Cell(0, 5, $row['hangisayfa'], 0, 1, 'C');
       
       
       
