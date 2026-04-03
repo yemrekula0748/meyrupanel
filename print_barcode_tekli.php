@@ -94,10 +94,8 @@ if ($result && $result->num_rows > 0) {
     $pdf->SetXY(6, 45);
     $pdf->MultiCell(90, 4, $urunlerString, 0, 'C', false);
 
-    // Adres - ürünlerin hemen altına dinamik konumlandır
-    $adresY = $pdf->GetY() + 3;
-    if ($adresY > 100) $adresY = 100; // barkoda çok yaklaşmasın
-    $pdf->SetXY(6, $adresY);
+    // Adres - barkodun hemen üstüne sabit
+    $pdf->SetXY(6, 101);
     $pdf->MultiCell(90, 4, "ADRES: " . $row['musteri_adresi'], 0, 'C', false);
     
     // Barkod (en alta taşındı)
