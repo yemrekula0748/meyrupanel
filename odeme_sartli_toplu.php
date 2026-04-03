@@ -125,7 +125,14 @@ if ($total_records > 0) {
         $html = str_replace('{{musteri_ismi}}', htmlspecialchars($row['musteri_ismi']), $html);
         $html = str_replace('{{musteri_adresi}}', htmlspecialchars($row['musteri_adresi']), $html);
         $html = str_replace('{{siparis_tarihi}}', htmlspecialchars($row['siparis_tarihi']), $html);
-        $html = str_replace('{{urunler}}', nl2br(htmlspecialchars($row['urunler'])), $html);
+        $urunlerRaw = preg_split('/[\n,]+/', $row['urunler']);
+        $urunlerRaw = array_filter(array_map('trim', $urunlerRaw), function($v) { return $v !== ''; });
+        $urunSayilari = array_count_values(array_values($urunlerRaw));
+        $urunlerLines = [];
+        foreach ($urunSayilari as $urun => $adet) {
+            $urunlerLines[] = $adet > 1 ? htmlspecialchars($urun) . ' - ' . $adet . ' ADET' : htmlspecialchars($urun);
+        }
+        $html = str_replace('{{urunler}}', implode('<br>', $urunlerLines), $html);
         $html = str_replace('{{hangisayfa}}', htmlspecialchars($row['hangisayfa']), $html);
         $html = str_replace('{{musteri_il}}', htmlspecialchars($row['musteri_il']), $html);
         $html = str_replace('{{musteri_ilce}}', htmlspecialchars($row['musteri_ilce']), $html);
