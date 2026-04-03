@@ -78,7 +78,17 @@ if ($result && $result->num_rows > 0) {
 
     // Ürün Bilgileri
     $urunler = explode(",", $row['urunler']);
-    $urunlerString = implode("\n", array_map('trim', $urunler));
+    $urunler = array_map('trim', $urunler);
+    $urunSayilari = array_count_values($urunler);
+    $urunlerLines = [];
+    foreach ($urunSayilari as $urun => $adet) {
+        if ($adet > 1) {
+            $urunlerLines[] = $urun . ' - ' . $adet . ' ADET';
+        } else {
+            $urunlerLines[] = $urun;
+        }
+    }
+    $urunlerString = implode("\n", $urunlerLines);
 
     $pdf->SetFont($fontName, '', 9);
     $pdf->SetXY(6, 45);
@@ -88,8 +98,8 @@ if ($result && $result->num_rows > 0) {
     $pdf->SetXY(6, 72);
     $pdf->MultiCell(90, 4, "ADRES: " . $row['musteri_adresi'], 0, 'C', false);
     
-    // Barkod
-    $pdf->SetXY(20, 90);
+    // Barkod (en alta taşındı)
+    $pdf->SetXY(20, 109);
     $style = [
         'align' => 'C',
         'stretch' => true,
@@ -105,12 +115,12 @@ if ($result && $result->num_rows > 0) {
     // Kargo Firması
     $kargoFirmasi = getKargoFirmasi($row['kargo_barkodu']);
     $pdf->SetFont($fontName, 'B', 10);
-    $pdf->SetXY(10, 115);
+    $pdf->SetXY(10, 131);
     $pdf->Cell(0, 5, $kargoFirmasi, 0, 1, 'C');
 
     // Kaynak bilgisi
     $pdf->SetFont($fontName, '', 10);
- 	 $pdf->SetXY(10, 125);
+    $pdf->SetXY(10, 138);
     $pdf->Cell(0, 5, $row['hangisayfa'], 0, 1, 'C');
 
     // PDF çıktısı
