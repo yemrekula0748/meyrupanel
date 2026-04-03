@@ -1,7 +1,7 @@
 <?php
 $url = 'https://meyrupanel.com.tr/sadi_yunusemre_ptt_bedelsiz_odeme.php'; // Veya uzaktaysa tam URL
-$tekrar_sayisi = 18;
-$bekleme_suresi = 3; // saniye
+$tekrar_sayisi = 28;
+$bekleme_suresi = 2; // saniye
 
 for ($i = 1; $i <= $tekrar_sayisi; $i++) {
     echo "[$i] $url çağrılıyor...\n";
