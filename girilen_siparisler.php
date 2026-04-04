@@ -198,7 +198,7 @@ $db = new DB();
 $bugun = date('Y-m-d');
 
 // iKas Son tablosu için
-$sorgu = $db->query("SELECT COUNT(*) AS toplam FROM ikas_son WHERE DATE(tarih) = ?", [$bugun], "s");
+$sorgu = $db->query("SELECT COUNT(*) AS toplam FROM meyru_ikas_son WHERE DATE(tarih) = ?", [$bugun], "s");
 $sayi = 0;
 if ($sorgu && $row = $sorgu->fetch_assoc()) {
     $sayi = $row['toplam'];
