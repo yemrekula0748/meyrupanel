@@ -93,7 +93,7 @@ if ($result->num_rows > 0) {
         $pdf->MultiCell(90, 4, $urunlerString, 0, 'C', false);
 
         // Adres - barkodun hemen üstüne sabit
-        $pdf->SetXY(6, 101);
+        $pdf->SetXY(6, 93);
         $pdf->MultiCell(90, 4, "ADRES: " . $row['musteri_adresi'], 0, 'C', false);
 
         // Barkod (en alta taşındı)
