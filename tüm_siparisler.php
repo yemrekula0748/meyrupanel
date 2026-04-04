@@ -137,8 +137,11 @@ $result = $db->query($query);
                     </div>
                     
                     <div class="card-body">
+                        <div class="mb-3">
+                            <input type="text" id="anlikArama" class="form-control" placeholder="🔍 Barkod no veya müşteri bilgisi ile arayın..." style="max-width:400px;" autocomplete="off">
+                        </div>
                         <div class="table-responsive">
-                            <table class="table table-striped table-bordered text-center align-middle">
+                            <table id="siparisTablo" class="table table-striped table-bordered text-center align-middle">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -337,6 +340,19 @@ if ($barkod === null || $barkod === '' ) {
             font-size: 0.75rem;
         }
         </style>
+
+<script>
+document.getElementById('anlikArama').addEventListener('input', function () {
+    var aramaMetni = this.value.toLowerCase().trim();
+    var satirlar = document.querySelectorAll('#siparisTablo tbody tr');
+    satirlar.forEach(function (satir) {
+        var barkod   = (satir.cells[2] ? satir.cells[2].textContent : '').toLowerCase();
+        var musteri  = (satir.cells[4] ? satir.cells[4].textContent : '').toLowerCase();
+        var eslesme  = barkod.includes(aramaMetni) || musteri.includes(aramaMetni);
+        satir.style.display = eslesme ? '' : 'none';
+    });
+});
+</script>
 
 <script>
 function resmilestirYunus(id, btn) {
